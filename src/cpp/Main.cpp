@@ -25,8 +25,9 @@ int main(int argc, char *argv[]) {
   matrix M = read("./examples/" + input);
 
   // matrix m{{1, -1, 0}, {-2, 4, -2}, {0, -1, 1}};
-  printMatrix(M);
-  eigenPair p = powerMethod(M);
+  // printMatrix(M);
+
+  eigenPair p = powerMethod(M, iterations, tolerance);
   printEigenPair(p);
   writeOutEigenPair(p, "./results/" + input);
 

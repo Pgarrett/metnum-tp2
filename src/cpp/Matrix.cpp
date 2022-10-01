@@ -96,17 +96,17 @@ vector<double> multiplyMatrixByVector(const matrix &m,
   return result;
 }
 
-eigenPair powerMethod(const matrix &m) {
+eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
   assert(m.size() != 0);
 
   vector<double> initialVector = randomVector(m[1].size());
   eigenPair p;
   vector<double> previousVector = initialVector;
 
-  for (int i = 0; i < powerMethodIterations; ++i) {
+  for (int i = 0; i < iterations; ++i) {
     vector<double> multipliedVector = multiplyMatrixByVector(m, previousVector);
     p.eigenvector = scale(1 / norm2(multipliedVector), multipliedVector);
-    if (euclideanDistance(p.eigenvector, previousVector) < powerMethodEpsilon) {
+    if (euclideanDistance(p.eigenvector, previousVector) < epsilon) {
       break;
     }
     previousVector = p.eigenvector;

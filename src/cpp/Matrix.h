@@ -15,7 +15,7 @@ typedef vector<vector<double>> matrix;
 namespace MatrixOperator {
 matrix read(string filename);
 vector<double> multiplyMatrixByVector(const matrix &m, const vector<double> &v);
-eigenPair powerMethod(const matrix &m);
+eigenPair powerMethod(const matrix &m, int iterations, double epsilon);
 } // namespace MatrixOperator
 
 namespace MatrixPrinter {
