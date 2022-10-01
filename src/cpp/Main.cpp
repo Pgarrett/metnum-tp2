@@ -1,10 +1,12 @@
 #include <iostream>
 
+#include "IO.h"
 #include "Matrix.h"
 
 using namespace MatrixOperator;
 using namespace MatrixPrinter;
 using namespace EigenPairPrinter;
+using namespace IO;
 
 int main(int argc, char *argv[]) {
   if (argc < 3) {
@@ -20,12 +22,13 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Resolviendo matriz: " << input << std::endl;
 
-  matrix M = read(input);
+  matrix M = read("./examples/" + input);
 
   // matrix m{{1, -1, 0}, {-2, 4, -2}, {0, -1, 1}};
   printMatrix(M);
   eigenPair p = powerMethod(M);
   printEigenPair(p);
+  writeOutEigenPair(p, "./results/" + input);
 
   return 0;
 }
