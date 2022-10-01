@@ -1,2 +1,8 @@
 .idea/
 cmake-build-debug/
+CMakeFiles/
+.vscode/
+cmake_install.cmake
+CmakeCache.txt
+Makefile
+metnum_tp2
