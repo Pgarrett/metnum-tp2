@@ -3,4 +3,4 @@ project(metnum_tp2)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(metnum_tp2 src/main/cpp/main.cpp)
+add_executable(tp2 src/main/cpp/main.cpp)
