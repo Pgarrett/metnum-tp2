@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
 project(metnum_tp2)
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 11)
 set(SOURCE_FILES src/cpp/Matrix.cpp src/cpp/Vector.cpp src/cpp/Eigenpair.cpp src/cpp/IO.cpp src/cpp/Constants.h)
 add_executable(tp2 ${SOURCE_FILES} src/cpp/Main.cpp)
