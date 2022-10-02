@@ -6,5 +6,6 @@
 using namespace std;
 
 namespace IO {
-void writeOutEigenPair(eigenPair &p, string file);
-}
+void writeOutEigenPairs(vector<eigenPair> &pairs, string file);
+void writeEigenVectorsAsColumns(ofstream &file, vector<eigenPair> &results);
+} // namespace IO

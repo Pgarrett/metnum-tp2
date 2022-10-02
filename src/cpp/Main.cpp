@@ -22,18 +22,10 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Resolviendo matriz: " << input << std::endl;
 
-  matrix M = read("./examples/" + input);
-
-  eigenPair p = powerMethod(M, iterations, tolerance);
-  // printEigenPair(p);
-  writeOutEigenPair(p, "./results/" + input);
+  matrix M = read("./examples/" + input + ".txt");
 
   vector<eigenPair> res = deflationMethod(M, iterations, tolerance);
-
-  std::cout << "Autovalores: ";
-  for (int i = 0; i < res.size(); i++) {
-    std::cout << res[i].eigenvalue << ", ";
-  }
+  writeOutEigenPairs(res, "./results/" + input);
 
   return 0;
 }
