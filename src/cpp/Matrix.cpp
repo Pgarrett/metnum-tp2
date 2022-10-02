@@ -46,8 +46,7 @@ matrix read(string filename) {
     auto current = linkList.begin();
     auto last = linkList.end();
     while (current != last) {
-      const string &ref = *current; // take a reference
-      std::cout << ref;
+      const string &ref = *current;
       row.push_back(stoi(ref));
       current = std::next(current, 1);
     }
@@ -115,6 +114,53 @@ eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
   p.eigenvalue =
       dotProduct(p.eigenvector, multiplyMatrixByVector(m, p.eigenvector));
   return p;
+}
+
+void substract(matrix &a, const matrix &b) {
+  for (int i = 0; i < a.size(); i++) {
+    for (int j = 0; j < a.size(); j++) {
+      a[i][j] = a[i][j] - b[i][j];
+    }
+  }
+}
+
+void scaleMatrix(matrix &m, double c) {
+  for (int i = 0; i < m.size(); i++) {
+    for (int j = 0; j < m.size(); j++) {
+      m[i][j] = m[i][j] * c;
+    }
+  }
+}
+
+matrix outerProduct(vector<double> u, vector<double> v) {
+  matrix result;
+  for (int i = 0; i < u.size(); i++) {
+    vector<double> row;
+    for (int j = 0; j < u.size(); j++) {
+      row.push_back(u[i] * v[j]);
+    }
+    result.push_back(row);
+  }
+  return result;
+}
+
+void deleteMaxEigenValue(matrix &m, double a, vector<double> v) {
+  matrix subtrahend = outerProduct(v, v);
+  scaleMatrix(subtrahend, a);
+  substract(m, subtrahend);
+}
+
+vector<eigenPair> deflationMethod(const matrix m, int iterations,
+                                  double epsilon) {
+  matrix A = m;
+  vector<eigenPair> result;
+  eigenPair p;
+  for (int i = 0; i < m.size(); i++) {
+    p = powerMethod(A, iterations, epsilon);
+    result.push_back(p);
+    deleteMaxEigenValue(A, p.eigenvalue, p.eigenvector);
+  }
+  return result;
 }
 } // namespace MatrixOperator
 

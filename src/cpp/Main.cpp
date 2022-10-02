@@ -24,12 +24,16 @@ int main(int argc, char *argv[]) {
 
   matrix M = read("./examples/" + input);
 
-  // matrix m{{1, -1, 0}, {-2, 4, -2}, {0, -1, 1}};
-  // printMatrix(M);
-
   eigenPair p = powerMethod(M, iterations, tolerance);
-  printEigenPair(p);
+  // printEigenPair(p);
   writeOutEigenPair(p, "./results/" + input);
+
+  vector<eigenPair> res = deflationMethod(M, iterations, tolerance);
+
+  std::cout << "Autovalores: ";
+  for (int i = 0; i < res.size(); i++) {
+    std::cout << res[i].eigenvalue << ", ";
+  }
 
   return 0;
 }
