@@ -4,15 +4,15 @@ import numpySolver as npt
 import outputReader as outr
 import asserter as asrt
 
-def compare(inputCppFile, outputCppFile):
+def comparePowerMethod(inputCppFile, outputCppFile):
     numpyEighVal, numpyEighVec = npt.solve(inputCppFile)
     cppEighVal, cppEighVec = outr.readOutputFile(outputCppFile)
-    assertMaxValuesAreClose(numpyEighVal, numpyEighVec, cppEighVal, cppEighVec)
+    return assertMaxValuesAreClose(numpyEighVal, numpyEighVec, cppEighVal, cppEighVec)
 
 def assertMaxValuesAreClose(numpyEighVal, numpyEighVec, cppEighVal, cppEighVec):
     maxNumpyEighVal, maxNumpyEighVec = getHighestEigh(numpyEighVal, numpyEighVec)
     maxCppEighVal, maxCppEighVec = getHighestEigh(cppEighVal, cppEighVec)
-    asrt.assertAllClose(maxCppEighVec, maxNumpyEighVec)
+    return asrt.assertAllClose(maxCppEighVec, maxNumpyEighVec)
 
 def getHighestEigh(eighVal, eighVect):
     maxEighValIndex = np.argmax(eighVal)
@@ -24,3 +24,9 @@ def getHighestEigh(eighVal, eighVect):
         print("Max Eighenvector:")
         print(maxEighVec)
     return maxEighVal, maxEighVec
+
+def compareSimilarityMethod(inputCppFile, outputCppFile):
+    numpySimilarityMatrix = npt.solveSimilarityMatrix(inputCppFile)
+    cppSimilarityMatrix = outr.readOutputMatrixFile(outputCppFile)
+    return numpySimilarityMatrix == cppSimilarityMatrix
+

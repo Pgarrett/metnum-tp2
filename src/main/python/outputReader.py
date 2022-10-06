@@ -3,7 +3,9 @@ import numpy as np
 from numpy import genfromtxt
 
 def readOutputFile(file):
-    print("Reading output file ", file)
+    if cfg.debug:
+        print("Reading output file ", file)
+
     outputEighenVectors = open(file + "_eighenvec", "r")
     outputEighenValues = genfromtxt(file + "_eighenval", delimiter=',')
     matrix = []
@@ -20,3 +22,8 @@ def toNumpyMatrix(matrix):
     for arr in matrix:
         np_arrays.append(np.array(arr))
     return np_arrays
+
+def readOutputMatrixFile(filename):
+    with open(filename, "r") as file:
+        m = [[float(num) for num in line.split(", ")] for line in file]
+    return m
