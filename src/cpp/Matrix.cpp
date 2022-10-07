@@ -58,7 +58,7 @@ matrix read(string filename) {
 matrix buildLaplacianMatrix(const matrix &a) {
   matrix D;
   for (int i = 0; i < a.size(); i++) {
-    vector<double> row(0, a.size());
+    vector<double> row(a.size());
     double degree = 0;
     for (int j = 0; j < a.size(); j++) {
       degree += a[i][j];

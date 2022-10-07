@@ -7,7 +7,7 @@ cmake CMakeLists.txt
 make
 
 ### Ejecución
-Ejecutable: metnum_tp2
+Ejecutable: tp2
 
 Parámetros:
 - Nombre del archivo .txt a ejecutar desde directorio examples
@@ -17,7 +17,7 @@ Parámetros:
 Resultados: se escriben a un archivo del mismo nombre del input, en el directorio results
 
 ### Ejemplo:
-./metnum_tp2 karateclub 10000 e^-6
+./tp2 karateclub 10000 e^-6
 
 ## Link al informe:
 https://www.overleaf.com/project/63361ede618f8b4e321c2715
