@@ -24,8 +24,6 @@ int main(int argc, char *argv[]) {
 
   matrix M = read("./examples/" + input + ".txt");
 
-  matrix L = buildLaplacianMatrix(M);
-
   vector<eigenPair> res = deflationMethod(M, iterations, tolerance);
   writeOutEigenPairs(res, "./results/" + input);
 

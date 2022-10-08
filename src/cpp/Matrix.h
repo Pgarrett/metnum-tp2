@@ -14,7 +14,6 @@ typedef vector<vector<double>> matrix;
 
 namespace MatrixOperator {
 matrix read(string filename);
-matrix buildLaplacianMatrix(const matrix &a);
 void scaleMatrix(matrix &m, double scalar);
 void substract(matrix &a, const matrix &b);
 matrix outerProduct(vector<double> u, vector<double> v);

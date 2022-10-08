@@ -1,21 +1,14 @@
 import config as cfg
 import numpy as np
-from numpy import genfromtxt
+import os
 
 def readOutputFile(file):
     if cfg.debug:
         print("Reading output file ", file)
-
-    outputEighenVectors = open(file + "_eighenvec", "r")
-    outputEighenValues = genfromtxt(file + "_eighenval", delimiter=',')
-    matrix = []
-    matrix = [list(map(float, line.split())) for line in outputEighenVectors]
-    if cfg.debug:
-        print("\nread matrix")
-        print(matrix)
-        print("\nread outputEighenValues")
-        print(outputEighenValues)
-    return outputEighenValues, np.transpose(toNumpyMatrix(matrix))
+    resultsPath = str(os.getcwd()) + '/results/'
+    eigenVectors = open(resultsPath + file + "_eigenVectors.csv", "r")
+    eigenValues = open(resultsPath + file + "_eigenValues.csv", "r")
+    return eigenValues, eigenVectors
 
 def toNumpyMatrix(matrix):
     np_arrays = []
@@ -27,3 +20,13 @@ def readOutputMatrixFile(filename):
     with open(filename, "r") as file:
         m = [[float(num) for num in line.split(", ")] for line in file]
     return m
+
+def readLabels():
+    labelsPath = str(os.getcwd()) + '/examples/karateclub_labels.txt'
+    labels = []
+    with open(labelsPath, "r") as f:
+        input = f.read()
+        for line in input:
+            if line == '1' or line == '0':
+                labels.append(float(line))
+    return labels
