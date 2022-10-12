@@ -1,6 +1,10 @@
 import subprocess as sub
 import config as cfg
+import os
 
 def runTpFor(input):
     print("Running TP for file: %s", input)
-    sub.run("../../../tp2 %s %s %s", input, str(cfg.iterations), str(cfg.powerMethodEpsilon))
+    print(str(os.getcwd()))
+    tp2 = str(os.getcwd()) + "/tp2"
+    cmd = [tp2, input, str(cfg.iterations), str(cfg.powerMethodEpsilon)]
+    sub.run(cmd)

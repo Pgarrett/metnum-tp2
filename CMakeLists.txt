@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.23)
-project(metnum_tp2)
-set(CMAKE_CXX_STANDARD 11)
+PROJECT(tp2)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8...3.13)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -std=c++17 -Wall -Wpedantic -Wextra -Wshadow -Wpointer-arith -Wcast-qual")
 set(SOURCE_FILES src/cpp/Matrix.cpp src/cpp/Vector.cpp src/cpp/Eigenpair.cpp src/cpp/IO.cpp src/cpp/Constants.h)
 add_executable(tp2 ${SOURCE_FILES} src/cpp/Main.cpp)
