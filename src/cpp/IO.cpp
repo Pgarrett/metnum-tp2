@@ -49,6 +49,8 @@ void writeOutEigenPairs(vector<eigenPair> &results, string filename) {
       cout << "unable to create eigenvectors for: " << filename << endl;
   }
 
+  std::sort(results.begin(), results.end(), compareByEigenValue);
+
   eigenValues << "eigenValues,\n";
   for (eigenPair pair : results) {
     eigenValues << pair.eigenvalue << ",\n";
@@ -78,6 +80,10 @@ void writeOutMatrix(const matrix &m, const string filepath) {
         }
     }
     outputFile.close();
+}
+
+bool compareByEigenValue(const eigenPair & ep1, const eigenPair & ep2) {
+    return ep1.eigenvalue < ep2.eigenvalue;
 }
 
 } // namespace IO

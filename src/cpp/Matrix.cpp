@@ -117,7 +117,7 @@ eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
   assert(m.size() != 0);
 
   cout << "about to apply power method to matrix: " << endl;
-  printMatrix(m);
+//  printMatrix(m);
 
   vector<double> initialVector = randomVector(m[1].size());
   eigenPair p;

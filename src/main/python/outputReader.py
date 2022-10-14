@@ -1,21 +1,18 @@
 import config as cfg
 import numpy as np
-from numpy import genfromtxt
 
 def readOutputFile(file):
     if cfg.debug:
         print("Reading output file ", file)
 
-    outputEighenVectors = open(file + "_eighenvec", "r")
-    outputEighenValues = genfromtxt(file + "_eighenval", delimiter=',')
-    matrix = []
-    matrix = [list(map(float, line.split())) for line in outputEighenVectors]
+    outputEighenVectors = readEigenVectors(file + "_eigenVectors.csv")
+    outputEighenValues = readEigenValues(file + "_eigenValues.csv")
     if cfg.debug:
         print("\nread matrix")
-        print(matrix)
+        print(outputEighenVectors)
         print("\nread outputEighenValues")
         print(outputEighenValues)
-    return outputEighenValues, np.transpose(toNumpyMatrix(matrix))
+    return outputEighenValues, np.transpose(toNumpyMatrix(outputEighenVectors))
 
 def toNumpyMatrix(matrix):
     np_arrays = []
