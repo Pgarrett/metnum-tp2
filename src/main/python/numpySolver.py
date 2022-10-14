@@ -46,3 +46,15 @@ def solveSimilarityMatrix(inputFile):
 
     matrix = readInputFile(inputFile)
     return numpySimilarityMatrix(matrix)
+
+def solveDeflationMethod(inputFile):
+    if cfg.debug:
+        print("Calculating deflation method witn numpy:")
+
+    matrix = readInputFile(inputFile)
+    return np.linalg.eig(matrix)
+
+
+
+
+

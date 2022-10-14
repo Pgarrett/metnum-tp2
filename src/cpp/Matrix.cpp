@@ -14,10 +14,12 @@
 #include <string>
 
 #include "Constants.h"
+#include "Matrix.h"
 #include "Vector.h"
 
 using namespace std;
 using namespace MatrixOperator;
+using namespace MatrixPrinter;
 using namespace VectorOperator;
 using namespace Constants;
 
@@ -98,6 +100,9 @@ vector<double> multiplyMatrixByVector(const matrix &m,
 eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
   assert(m.size() != 0);
 
+  cout << "about to apply power method to matrix: " << endl;
+  printMatrix(m);
+
   vector<double> initialVector = randomVector(m[1].size());
   eigenPair p;
   vector<double> previousVector = initialVector;
@@ -111,8 +116,8 @@ eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
     previousVector = p.eigenvector;
   }
 
-  p.eigenvalue =
-      dotProduct(p.eigenvector, multiplyMatrixByVector(m, p.eigenvector));
+  normalize(p.eigenvector);
+  p.eigenvalue = dotProduct(p.eigenvector, multiplyMatrixByVector(m, p.eigenvector));
   return p;
 }
 
@@ -132,7 +137,7 @@ void scaleMatrix(matrix &m, double c) {
   }
 }
 
-matrix outerProduct(vector<double> u, vector<double> v) {
+matrix outerProduct(vector<double> &u, vector<double> &v) {
   matrix result;
   for (int i = 0; i < u.size(); i++) {
     vector<double> row;
@@ -144,14 +149,37 @@ matrix outerProduct(vector<double> u, vector<double> v) {
   return result;
 }
 
+double innerProduct(vector<double> &u, vector<double> &v) {
+    assert(u.size() == v.size());
+    double result = 0;
+    for (double i = 0; i < u.size(); ++i) {
+        result += u[i] * v[i];
+    }
+    return result;
+}
+
+matrix similarityMatrix(const matrix &a) {
+    vector<double> rowOf0(a.size(), 0);
+    matrix similarity(a.size(), rowOf0);
+
+    for (double i = 0; i < a.size(); ++i) {
+        for (double j = 0; j < a.size(); ++j) {
+            vector<double> iVector = a[i];
+            vector<double> jVector = a[j];
+            double innerProductIJ = innerProduct(iVector, jVector);
+            similarity[i][j] = innerProductIJ;
+        }
+    }
+    return similarity;
+}
+
 void deleteMaxEigenValue(matrix &m, double a, vector<double> v) {
   matrix subtrahend = outerProduct(v, v);
   scaleMatrix(subtrahend, a);
   substract(m, subtrahend);
 }
 
-vector<eigenPair> deflationMethod(const matrix m, int iterations,
-                                  double epsilon) {
+vector<eigenPair> deflationMethod(const matrix m, int iterations, double epsilon) {
   matrix A = m;
   vector<eigenPair> result;
   eigenPair p;

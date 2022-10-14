@@ -19,6 +19,13 @@ namespace VectorOperator {
         return sqrt(sum);
     }
 
+    void normalize(vector<double> &v) {
+        double norm = norm2(v);
+        for (int i = 0; i < v.size(); ++i) {
+            v[i] = v[i] / norm;
+        }
+    }
+
     double norm2(const vector<double> &v) {
         double sum = 0;
         for (int i = 0; i < v.size(); ++i) {

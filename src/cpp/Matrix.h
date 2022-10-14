@@ -16,7 +16,9 @@ namespace MatrixOperator {
 matrix read(string filename);
 void scaleMatrix(matrix &m, double scalar);
 void substract(matrix &a, const matrix &b);
-matrix outerProduct(vector<double> u, vector<double> v);
+matrix outerProduct(vector<double> &u, vector<double> &v);
+double innerProduct(vector<double> &u, vector<double> &v);
+matrix similarityMatrix(const matrix &a);
 void deleteMaxEigenValue(matrix &m, double a, vector<double> v);
 vector<double> multiplyMatrixByVector(const matrix &m, const vector<double> &v);
 eigenPair powerMethod(const matrix &m, int iterations, double epsilon);
