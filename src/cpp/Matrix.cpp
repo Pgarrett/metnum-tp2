@@ -57,22 +57,6 @@ matrix read(string filename) {
   return res;
 }
 
-matrix buildLaplacianMatrix(const matrix &a) {
-  matrix D;
-  for (int i = 0; i < a.size(); i++) {
-    vector<double> row(a.size());
-    double degree = 0;
-    for (int j = 0; j < a.size(); j++) {
-      degree += a[i][j];
-    }
-    row[i] = degree;
-    D.push_back(row);
-  }
-
-  substract(D, a);
-  return D;
-}
-
 bool allRowsHaveTheSameDimension(const matrix &m) {
   if (m.size() > 0) {
     int firstRowDimension = m[1].size();
