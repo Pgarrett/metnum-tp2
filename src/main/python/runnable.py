@@ -55,14 +55,14 @@ def numpyGenerator(n):
 def runTestsForNumpyGen(n):
 	target = 'autogen/matrix_' + str(n)
 	exec.runTpFor(target)
-	print("\nRunning tests for 3b1b:")
+	print("\nRunning tests for " + target + ":")
 	testPowerMethod(target)
 	testDeflationMethod(target)
 	testSimilarityMatrix(target)
 
 def testNumpyCases():
 	# for n in range(3, 4)
-	n = 3
+	n = 10
 	# numpyGenerator(n)
 	runTestsForNumpyGen(n)
 

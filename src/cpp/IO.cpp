@@ -18,13 +18,13 @@ void writeEigenVectorsAsColumns(ofstream &file, vector<eigenPair> &results) {
     }
   }
 
-  for (int i = 0; i < transposed.size(); i++) {
+  for (double i = 0; i < transposed.size(); i++) {
     // column names
     file << "v_" << i + 1 << ", ";
   }
   file << "\n";
 
-  for (int i = 0; i < transposed.size(); i++) {
+  for (double i = 0; i < transposed.size(); i++) {
     for (double v_i : transposed[i]) {
       file << v_i << ", ";
     }
@@ -68,9 +68,9 @@ void writeOutMatrix(const matrix &m, const string filepath) {
     if (outputFile.fail()) {
         cout << "unable to write out matrix in filepath: " << filepath << endl;
     }
-    for (int i = 0; i < m.size(); ++i) {
+    for (double i = 0; i < m.size(); ++i) {
         vector<double> row = m[i];
-        for (int j = 0; j < row.size(); ++j) {
+        for (double j = 0; j < row.size(); ++j) {
             outputFile << row[j];
             if (j < row.size() - 1) {
                 outputFile << ", ";

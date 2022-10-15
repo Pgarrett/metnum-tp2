@@ -12,7 +12,6 @@ def comparePowerMethod(inputCppFile):
 def assertMaxValuesAreClose(numpyEighVal, numpyEighVec, cppEighVal, cppEighVec):
     maxNumpyEighVal, maxNumpyEighVec = getHighestEigh(numpyEighVal, numpyEighVec)
     maxCppEighVal, maxCppEighVec = getHighestEigh(cppEighVal, cppEighVec)
-    # return asrt.assertAllClose(maxCppEighVec, maxNumpyEighVec)
     return vectorsAreClose(maxCppEighVec, maxNumpyEighVec)
 
 def getHighestEigh(eighVal, eighVect):
@@ -28,8 +27,21 @@ def getHighestEigh(eighVal, eighVect):
 
 def compareDeflationMethod(inputCppFile):
     numpyEighVal, numpyEighVec = npt.solve("./examples/" + inputCppFile  + ".txt")
+    # print("Print original numpy eighen vectors:")
+    # print(numpyEighVec)
+    # print("\n")
     cppEighValues, cppEighVectors = outr.readOutputFile("./results/" + inputCppFile)
-    return vectorsAreClose(numpyEighVal, cppEighValues) and vectorListsAreClose(np.transpose(numpyEighVec), cppEighVectors)
+    print("Numpy Eighevalue:")
+    print(numpyEighVal)
+    print("cpp Eighevalue:")
+    print(cppEighValues)
+    eighenValuesAreClose = vectorsAreClose(numpyEighVal, cppEighValues)
+    if not eighenValuesAreClose:
+        print("Eighenvalue compare failed")
+    eighenVectorsAreClose = vectorListsAreClose(np.transpose(numpyEighVec), cppEighVectors)
+    if not eighenValuesAreClose:
+        print("Eighenvectors compare failed")
+    return eighenValuesAreClose and eighenVectorsAreClose
 
 def compareSimilarityMethod(inputCppFile, outputCppFile):
     numpySimilarityMatrix = npt.solveSimilarityMatrix(inputCppFile)
@@ -49,11 +61,20 @@ def vectorsAreClose(v1, v2):
     return True
 
 def vectorListsAreClose(l1, l2):
+    print("Numpy Eighevec:")
+    print(l1)
+    print("cpp Eighevec:")
+    print(l2)
     if len(l1) != len(l2):
         return False
 
     for i in range(0,len(l1)):
         if not vectorsAreClose(l1[i], l2[i]):
+            print("Failed on iteration: " + str(i))
+            print("Numpy: ")
+            print(l1[i])
+            print("CPP: ")
+            print(l2[i])
             return False
 
     return True
