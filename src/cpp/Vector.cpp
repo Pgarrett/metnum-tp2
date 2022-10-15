@@ -55,9 +55,6 @@ vector<double> scale(double scalar, const vector<double> &v) {
   vector<double> result(v.size(), 0);
   for (double i = 0; i < v.size(); ++i) {
     result[i] = scalar * v[i];
-    if (abs(result[i]) < 1e-6) {
-      result[i] = 0;
-    }
   }
   return result;
 }

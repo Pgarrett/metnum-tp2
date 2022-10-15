@@ -102,7 +102,6 @@ vector<double> multiplyMatrixByVector(const matrix &m,
   vector<double> result;
   for (int i = 0; i < m.size(); ++i) {
     vector<double> row = m[i];
-    double resi = 0;
     vector<double> products_vector;
     for (int j = 0; j < row.size(); ++j) {
       products_vector.push_back(row[j] * v[j]);
@@ -116,7 +115,7 @@ vector<double> multiplyMatrixByVector(const matrix &m,
 eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
   assert(m.size() != 0);
 
-  vector<double> initialVector = randomVector(m[1].size());
+  vector<double> initialVector(m[1].size(), 1);
   eigenPair p;
   vector<double> previousVector = initialVector;
 
@@ -140,9 +139,6 @@ void substract(matrix &a, const matrix &b) {
   for (int i = 0; i < a.size(); i++) {
     for (int j = 0; j < a.size(); j++) {
       a[i][j] = a[i][j] - b[i][j];
-      if (abs(a[i][j]) < 1e-6) {
-        a[i][j] = 0;
-      }
     }
   }
 }
@@ -151,9 +147,6 @@ void scaleMatrix(matrix &m, double c) {
   for (int i = 0; i < m.size(); i++) {
     for (int j = 0; j < m.size(); j++) {
       m[i][j] = m[i][j] * c;
-      if (abs(m[i][j]) < 1e-6) {
-        m[i][j] = 0;
-      }
     }
   }
 }
@@ -196,8 +189,8 @@ matrix similarityMatrix(const matrix &a) {
 }
 
 void deleteMaxEigenValue(matrix &m, double a, vector<double> v) {
-  matrix subtrahend = outerProduct(v, v);
-  scaleMatrix(subtrahend, a);
+  vector<double> scaled = scale(a, v);
+  matrix subtrahend = outerProduct(scaled, v);
   substract(m, subtrahend);
 }
 
