@@ -27,14 +27,7 @@ def getHighestEigh(eighVal, eighVect):
 
 def compareDeflationMethod(inputCppFile):
     numpyEighVal, numpyEighVec = npt.solve("./examples/" + inputCppFile  + ".txt")
-    # print("Print original numpy eighen vectors:")
-    # print(numpyEighVec)
-    # print("\n")
     cppEighValues, cppEighVectors = outr.readOutputFile("./results/" + inputCppFile)
-    print("Numpy Eighevalue:")
-    print(numpyEighVal)
-    print("cpp Eighevalue:")
-    print(cppEighValues)
     eighenValuesAreClose = vectorsAreClose(numpyEighVal, cppEighValues)
     if not eighenValuesAreClose:
         print("Eighenvalue compare failed")
@@ -61,25 +54,17 @@ def vectorsAreClose(v1, v2):
     return True
 
 def vectorListsAreClose(l1, l2):
-    print("Numpy Eighevec:")
-    print(l1)
-    print("cpp Eighevec:")
-    print(l2)
     if len(l1) != len(l2):
         return False
 
+    res = True
     for i in range(0,len(l1)):
         if not vectorsAreClose(l1[i], l2[i]):
-            print("Failed on iteration: " + str(i))
-            print("Numpy: ")
-            print(l1[i])
-            print("CPP: ")
-            print(l2[i])
-            return False
+            print("Failed on iteration: " + str(i+1))
+            #for j in range(len(l1[i])):
+            #    print(abs(l1[i][j]) - abs(l2[i][j]))
+            res = False
 
-    return True
+    return res
 
-
-
-
-
+compareDeflationMethod('karateclub')

@@ -8,3 +8,5 @@ def runTpFor(input):
     tp2 = str(os.getcwd()) + "/tp2"
     cmd = [tp2, input, str(cfg.iterations), str(cfg.powerMethodEpsilon)]
     sub.run(cmd)
+
+runTpFor('karateclub')

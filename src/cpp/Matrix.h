@@ -2,6 +2,8 @@
 // Created by Fernando N. Frassia on 10/1/22.
 //
 
+#pragma once
+
 #include <list>
 #include <vector>
 
@@ -22,8 +24,9 @@ double innerProduct(vector<double> &u, vector<double> &v);
 matrix similarityMatrix(const matrix &a);
 void deleteMaxEigenValue(matrix &m, double a, vector<double> v);
 vector<double> multiplyMatrixByVector(const matrix &m, const vector<double> &v);
-eigenPair powerMethod(const matrix &m, int iterations, double epsilon, int lambda);
-vector<eigenPair> deflationMethod(const matrix m, int iterations,
+eigenPair powerMethod(const matrix &m, int iterations, double epsilon,
+                      int lambda);
+vector<eigenPair> deflationMethod(const matrix &m, int iterations,
                                   double epsilon);
 } // namespace MatrixOperator
 

@@ -4,6 +4,7 @@
 
 #include "Matrix.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
@@ -14,10 +15,8 @@
 #include <string>
 
 #include "Constants.h"
-#include "Matrix.h"
 #include "Vector.h"
 
-using namespace std;
 using namespace MatrixOperator;
 using namespace MatrixPrinter;
 using namespace VectorOperator;
@@ -75,8 +74,8 @@ matrix buildLaplacianMatrix(const matrix &a) {
 
 bool allRowsHaveTheSameDimension(const matrix &m) {
   if (m.size() > 0) {
-    double firstRowDimension = m[1].size();
-    for (double i = 0; i < m.size(); ++i) {
+    int firstRowDimension = m[1].size();
+    for (int i = 0; i < m.size(); ++i) {
       if (m[i].size() != firstRowDimension) {
         return false;
       }
@@ -101,65 +100,69 @@ vector<double> multiplyMatrixByVector(const matrix &m,
   assert(matrixVectorMultiplicationIsPossible(m, v));
 
   vector<double> result;
-  for (double i = 0; i < m.size(); ++i) {
+  for (int i = 0; i < m.size(); ++i) {
     vector<double> row = m[i];
     double resi = 0;
-    for (double j = 0; j < row.size(); ++j) {
-      resi += row[j] * v[j];
+    vector<double> products_vector;
+    for (int j = 0; j < row.size(); ++j) {
+      products_vector.push_back(row[j] * v[j]);
     }
-    result.push_back(resi);
+    result.push_back(kahanSum(products_vector));
   }
 
   return result;
 }
 
-eigenPair powerMethod(const matrix &m, int iterations, double epsilon, int lambda) {
+eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
   assert(m.size() != 0);
 
-  cout << "about to apply power method to matrix: " << endl;
-  printMatrix(m);
-
   vector<double> initialVector = randomVector(m[1].size());
-//  vector<double> initialVector = {1,1,1};
   eigenPair p;
   vector<double> previousVector = initialVector;
 
-  for (double i = 0; i < iterations; ++i) {
+  for (int i = 0; i < iterations; ++i) {
     vector<double> multipliedVector = multiplyMatrixByVector(m, previousVector);
     p.eigenvector = scale(1 / norm2(multipliedVector), multipliedVector);
     if (euclideanDistance(p.eigenvector, previousVector) < epsilon) {
-        cout << "breaking due to euclidean distance. power method lambda[" << lambda << "]" << endl;
+      std::cout << "criterio de corte aplicado" << std::endl;
       break;
     }
     previousVector = p.eigenvector;
   }
 
-//  normalize(p.eigenvector);
-  p.eigenvalue = dotProduct(p.eigenvector, multiplyMatrixByVector(m, p.eigenvector));
+  // normalize(p.eigenvector);
+  p.eigenvalue =
+      dotProduct(p.eigenvector, multiplyMatrixByVector(m, p.eigenvector));
   return p;
 }
 
 void substract(matrix &a, const matrix &b) {
-  for (double i = 0; i < a.size(); i++) {
-    for (double j = 0; j < a.size(); j++) {
+  for (int i = 0; i < a.size(); i++) {
+    for (int j = 0; j < a.size(); j++) {
       a[i][j] = a[i][j] - b[i][j];
+      if (abs(a[i][j]) < 1e-6) {
+        a[i][j] = 0;
+      }
     }
   }
 }
 
 void scaleMatrix(matrix &m, double c) {
-  for (double i = 0; i < m.size(); i++) {
-    for (double j = 0; j < m.size(); j++) {
+  for (int i = 0; i < m.size(); i++) {
+    for (int j = 0; j < m.size(); j++) {
       m[i][j] = m[i][j] * c;
+      if (abs(m[i][j]) < 1e-6) {
+        m[i][j] = 0;
+      }
     }
   }
 }
 
 matrix outerProduct(vector<double> &u, vector<double> &v) {
   matrix result;
-  for (double i = 0; i < u.size(); i++) {
+  for (int i = 0; i < u.size(); i++) {
     vector<double> row;
-    for (double j = 0; j < u.size(); j++) {
+    for (int j = 0; j < u.size(); j++) {
       row.push_back(u[i] * v[j]);
     }
     result.push_back(row);
@@ -168,27 +171,28 @@ matrix outerProduct(vector<double> &u, vector<double> &v) {
 }
 
 double innerProduct(vector<double> &u, vector<double> &v) {
-    assert(u.size() == v.size());
-    double result = 0;
-    for (double i = 0; i < u.size(); ++i) {
-        result += u[i] * v[i];
-    }
-    return result;
+  assert(u.size() == v.size());
+  vector<double> products_vector;
+  double result = 0;
+  for (double i = 0; i < u.size(); ++i) {
+    products_vector.push_back(u[i] * v[i]);
+  }
+  return kahanSum(products_vector);
 }
 
 matrix similarityMatrix(const matrix &a) {
-    vector<double> rowOf0(a.size(), 0);
-    matrix similarity(a.size(), rowOf0);
+  vector<double> rowOf0(a.size(), 0);
+  matrix similarity(a.size(), rowOf0);
 
-    for (double i = 0; i < a.size(); ++i) {
-        for (double j = 0; j < a.size(); ++j) {
-            vector<double> iVector = a[i];
-            vector<double> jVector = a[j];
-            double innerProductIJ = innerProduct(iVector, jVector);
-            similarity[i][j] = innerProductIJ;
-        }
+  for (double i = 0; i < a.size(); ++i) {
+    for (double j = 0; j < a.size(); ++j) {
+      vector<double> iVector = a[i];
+      vector<double> jVector = a[j];
+      double innerProductIJ = innerProduct(iVector, jVector);
+      similarity[i][j] = innerProductIJ;
     }
-    return similarity;
+  }
+  return similarity;
 }
 
 void deleteMaxEigenValue(matrix &m, double a, vector<double> v) {
@@ -197,16 +201,14 @@ void deleteMaxEigenValue(matrix &m, double a, vector<double> v) {
   substract(m, subtrahend);
 }
 
-vector<eigenPair> deflationMethod(const matrix m, int iterations, double epsilon) {
+vector<eigenPair> deflationMethod(const matrix &m, int iterations,
+                                  double epsilon) {
   matrix A = m;
   vector<eigenPair> result;
   eigenPair p;
-  for (double i = 0; i < m.size(); i++) {
-      if (i == 3) {
-          cout << "stop here" << endl;
-      }
-    p = powerMethod(A, iterations, epsilon, i);
-      EigenPairPrinter::printEigenPair(p);
+  for (int i = 0; i < m.size(); i++) {
+    std::cout << "Running deflation, iteration: " << i << std::endl;
+    p = powerMethod(A, iterations, epsilon);
     result.push_back(p);
     deleteMaxEigenValue(A, p.eigenvalue, p.eigenvector);
   }
@@ -217,10 +219,10 @@ vector<eigenPair> deflationMethod(const matrix m, int iterations, double epsilon
 namespace MatrixPrinter {
 void printMatrix(const matrix &m) {
   cout << "matrix: " << endl;
-  for (double i = 0; i < m.size(); ++i) {
+  for (int i = 0; i < m.size(); ++i) {
     cout << "[";
     vector<double> row = m[i];
-    for (double j = 0; j < row.size(); ++j) {
+    for (int j = 0; j < row.size(); ++j) {
       cout << row[j];
       if (j < row.size() - 1) {
         cout << ", ";
