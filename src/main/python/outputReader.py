@@ -5,15 +5,14 @@ import os
 def readOutputFile(file):
     if cfg.debug:
         print("Reading output file ", file)
-
-    outputEighenVectors = readEigenVectors(file + "_eigenVectors.csv")
-    outputEighenValues = readEigenValues(file + "_eigenValues.csv")
+    outputEigenVectors = readEigenVectors(file + "_eigenVectors.csv")
+    outputEigenValues = readEigenValues(file + "_eigenValues.csv")
     if cfg.debug:
         print("\nread matrix")
-        print(outputEighenVectors)
-        print("\nread outputEighenValues")
-        print(outputEighenValues)
-    return outputEighenValues, np.transpose(toNumpyMatrix(outputEighenVectors))
+        print(outputEigenVectors)
+        print("\nread outputEigenValues")
+        print(outputEigenValues)
+    return outputEigenValues, np.transpose(toNumpyMatrix(outputEigenVectors))
 
 def toNumpyMatrix(matrix):
     np_arrays = []
@@ -26,6 +25,34 @@ def readOutputMatrixFile(filename):
         m = [[float(num) for num in line.split(", ")] for line in file]
     return m
 
+def readLabels():
+    labelsPath = str(os.getcwd()) + '/examples/karateclub_labels.txt'
+    labels = []
+    with open(labelsPath, "r") as f:
+        input = f.read()
+        for line in input:
+            if line == '1' or line == '0':
+                labels.append(float(line))
+    return labels
+
+def addLinks(input, dotFile):
+    wd = str(os.getcwd())
+    # get links
+    links = []
+    with open(wd  + "/examples/" + input + ".txt", "r") as f:
+        graph_links = f.readlines()
+        for line in graph_links:
+            curr = []
+            for v in line:
+                if v == '0' or v == '1':
+                    curr.append(v)
+            links.append(curr)
+    
+    with open(wd + "/graphs/" + dotFile + ".dot", "r") as f:
+        lines = f.readlines
+        for line in lines:
+            print(line)
+            
 def readEigenValues(filename):
     with open(filename, "r") as file:
         l = [line for line in file]
@@ -47,15 +74,4 @@ def writeOutProximity(results):
     with open(path, 'proximity.txt') as f:
         for pair in results:
             f.write(pair)
-
-
-
-
-
-
-
-
-
-
-
 
