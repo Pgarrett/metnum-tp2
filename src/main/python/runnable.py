@@ -32,7 +32,10 @@ def testProximityToNumpy(s):
 	outr.writeOutProximity(proximity_array)
 
 def runTestsFor(file, iterations = None, epsilon = None):
-	exec.runTpFor(file, iterations, epsilon)
+	if iterations and epsilon:
+		exec.runTpFor(file, iterations, epsilon)
+	else:
+		exec.runTpFor(file)
 	print("\nRunning tests for: " + file)
 	testPowerMethod(file)
 	testDeflationMethod(file)
@@ -68,5 +71,5 @@ def testNumpyCases():
 
 # numpyGenerator()
 # testNumpyCases()
-# runTestsFor('karateclub')
+runTestsFor('karateclub')
 # testProximityToNumpy('karateclub')
