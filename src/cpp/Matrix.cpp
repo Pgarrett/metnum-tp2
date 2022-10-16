@@ -123,7 +123,7 @@ eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
     vector<double> multipliedVector = multiplyMatrixByVector(m, previousVector);
     p.eigenvector = scale(1 / norm2(multipliedVector), multipliedVector);
     if (euclideanDistance(p.eigenvector, previousVector) < epsilon) {
-      std::cout << "criterio de corte aplicado" << std::endl;
+      // std::cout << "criterio de corte aplicado" << std::endl;
       break;
     }
     previousVector = p.eigenvector;
@@ -200,7 +200,7 @@ vector<eigenPair> deflationMethod(const matrix &m, int iterations,
   vector<eigenPair> result;
   eigenPair p;
   for (int i = 0; i < m.size(); i++) {
-    std::cout << "Running deflation, iteration: " << i << std::endl;
+    // std::cout << "Running deflation, iteration: " << i << std::endl;
     p = powerMethod(A, iterations, epsilon);
     result.push_back(p);
     deleteMaxEigenValue(A, p.eigenvalue, p.eigenvector);

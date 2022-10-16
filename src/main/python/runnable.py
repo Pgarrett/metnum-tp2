@@ -1,3 +1,4 @@
+import outputReader as outr
 import comparator as cmp
 import executor as exec
 import numpy as np
@@ -18,26 +19,24 @@ def testSimilarityMatrix(s):
 	stringTestResult = "OK" if testResult else "NOT OK"
 	print("\tTesting Similarity Matrix..." + stringTestResult)
 
-def runTestsForExercise1b():
-	exec.runTpFor("resolverEnComputadora1")
-	print("\nRunning tests for Exercise 1b:")
-	testPowerMethod("resolverEnComputadora1")
-	testDeflationMethod("resolverEnComputadora1")
-	testSimilarityMatrix("resolverEnComputadora1")
+def testProximityToNumpy(s):
+	proximity_array = []
+	iterations = [1e3, 1e4, 5e4, 1e5, 2e5, 3e5]
+	tolerance = [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8]
+	for iter in iterations:
+		for eps in tolerance:
+			exec.runTpFor(s, iter, eps)
+			testResult = cmp.compareProximityToNumpy(s)
+			result = [iter, eps] + testResult
+			proximity_array.append(result)
+	outr.writeOutProximity(proximity_array)
 
-def runTestsForKarate():
-	exec.runTpFor("karateclub")
-	print("\nRunning tests for Karate:")
-	testPowerMethod("karateclub")
-	testDeflationMethod("karateclub")
-	testSimilarityMatrix("karateclub")
-
-def runTestsFor3b1b():
-	exec.runTpFor("3b1b")
-	print("\nRunning tests for 3b1b:")
-	testPowerMethod("3b1b")
-	testDeflationMethod("3b1b")
-	testSimilarityMatrix("3b1b")
+def runTestsFor(file, iterations = None, epsilon = None):
+	exec.runTpFor(file, iterations, epsilon)
+	print("\nRunning tests for: " + file)
+	testPowerMethod(file)
+	testDeflationMethod(file)
+	testSimilarityMatrix(file)
 
 def numpyGenerator(n):
 	m = int((n*(n-1))/4)
@@ -66,9 +65,8 @@ def testNumpyCases():
 	# numpyGenerator(n)
 	runTestsForNumpyGen(n)
 
-# numpyGenerator()
-testNumpyCases()
-# runTestsForKarate()
-# runTestsForExercise1b()
-# runTestsFor3b1b()
 
+# numpyGenerator()
+# testNumpyCases()
+# runTestsFor('karateclub')
+# testProximityToNumpy('karateclub')

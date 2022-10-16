@@ -1,5 +1,6 @@
 import config as cfg
 import numpy as np
+import os
 
 def readOutputFile(file):
     if cfg.debug:
@@ -41,6 +42,11 @@ def readEigenVectors(filename):
             vectorList.append(vectorI)
     return vectorList
 
+def writeOutProximity(results):
+    path = str(os.getcwd()) + "/results/"
+    with open(path, 'proximity.txt') as f:
+        for pair in results:
+            f.write(pair)
 
 
 

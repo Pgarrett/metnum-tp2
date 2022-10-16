@@ -36,6 +36,16 @@ def compareDeflationMethod(inputCppFile):
         print("Eighenvectors compare failed")
     return eighenValuesAreClose and eighenVectorsAreClose
 
+def compareProximityToNumpy(inputCppFile):
+    numpyEighVal, numpyEighVec = npt.solve("./examples/" + inputCppFile  + ".txt")
+    cppEighVal, cppEighVec = outr.readOutputFile("./results/" + inputCppFile)
+    averageEigValDiff = getVectorDiff(numpyEighVal, cppEighVal)
+    averageEigVecDiff = []
+    for npVec, cppVec in zip(numpyEighVec, cppEighVec):
+        averageEigVecDiff.append(getVectorDiff(npVec, cppVec))
+    
+    return [averageEigValDiff, np.median(averageEigVecDiff)]
+
 def compareSimilarityMethod(inputCppFile, outputCppFile):
     numpySimilarityMatrix = npt.solveSimilarityMatrix(inputCppFile)
     cppSimilarityMatrix = outr.readOutputMatrixFile(outputCppFile)
@@ -67,4 +77,5 @@ def vectorListsAreClose(l1, l2):
 
     return res
 
-compareDeflationMethod('karateclub')
+def getVectorDiff(v1, v2):
+    return np.linalg.norm(v1-v2)
