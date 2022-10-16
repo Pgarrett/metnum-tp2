@@ -18,13 +18,13 @@ void writeEigenVectorsAsColumns(ofstream &file, vector<eigenPair> &results) {
     }
   }
 
-  for (int i = 0; i < transposed.size(); i++) {
+  for (double i = 0; i < transposed.size(); i++) {
     // column names
     file << "v_" << i + 1 << ", ";
   }
   file << "\n";
 
-  for (int i = 0; i < transposed.size(); i++) {
+  for (double i = 0; i < transposed.size(); i++) {
     for (double v_i : transposed[i]) {
       file << v_i << ", ";
     }
@@ -41,13 +41,15 @@ void writeOutEigenPairs(vector<eigenPair> &results, string filename) {
   ofstream eigenVectors;
   eigenValues.open(filename + "_eigenValues.csv");
   if (eigenValues.fail()) {
-      cout << "unable to create eigenvalues for: " << filename << endl;
+    cout << "unable to create eigenvalues for: " << filename << endl;
   }
 
   eigenVectors.open(filename + "_eigenVectors.csv");
   if (eigenVectors.fail()) {
-      cout << "unable to create eigenvectors for: " << filename << endl;
+    cout << "unable to create eigenvectors for: " << filename << endl;
   }
+
+  std::sort(results.begin(), results.end(), compareByEigenValue);
 
   eigenValues << "eigenValues,\n";
   for (eigenPair pair : results) {
@@ -58,26 +60,30 @@ void writeOutEigenPairs(vector<eigenPair> &results, string filename) {
 }
 
 void writeOutMatrix(const matrix &m, const string filepath) {
-    ostringstream streamObj;
-    streamObj << fixed;
-    streamObj << setprecision(2);
-    ofstream outputFile;
-    outputFile.open(filepath, ios::out);
-    if (outputFile.fail()) {
-        cout << "unable to write out matrix in filepath: " << filepath << endl;
+  ostringstream streamObj;
+  streamObj << fixed;
+  streamObj << setprecision(2);
+  ofstream outputFile;
+  outputFile.open(filepath, ios::out);
+  if (outputFile.fail()) {
+    cout << "unable to write out matrix in filepath: " << filepath << endl;
+  }
+  for (double i = 0; i < m.size(); ++i) {
+    vector<double> row = m[i];
+    for (double j = 0; j < row.size(); ++j) {
+      outputFile << row[j];
+      if (j < row.size() - 1) {
+        outputFile << ", ";
+      } else {
+        outputFile << "\n";
+      }
     }
-    for (int i = 0; i < m.size(); ++i) {
-        vector<double> row = m[i];
-        for (int j = 0; j < row.size(); ++j) {
-            outputFile << row[j];
-            if (j < row.size() - 1) {
-                outputFile << ", ";
-            } else {
-                outputFile << "\n";
-            }
-        }
-    }
-    outputFile.close();
+  }
+  outputFile.close();
+}
+
+bool compareByEigenValue(const eigenPair &ep1, const eigenPair &ep2) {
+  return ep1.eigenvalue < ep2.eigenvalue;
 }
 
 } // namespace IO

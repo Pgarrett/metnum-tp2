@@ -10,15 +10,15 @@ using namespace IO;
 using namespace std;
 
 void computeAndWriteOutSimilarityMatrix(const string input) {
-    matrix M = read("./examples/" + input + ".txt");
-    matrix S = similarityMatrix(M);
-    writeOutMatrix(S, "./results/" + input + "_similarityMatrix.csv");
+  matrix M = read("./examples/" + input + ".txt");
+  matrix S = similarityMatrix(M);
+  writeOutMatrix(S, "./results/" + input + "_similarityMatrix.csv");
 }
 
 int main(int argc, char *argv[]) {
   if (argc < 3) {
     cerr << "Formato de entrada: " << argv[0]
-              << "<archivo> <iteraciones> <tolerancia>" << endl;
+         << "<archivo> <iteraciones> <tolerancia>" << endl;
     return 1;
   }
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   cout << "Con tolerancia: " << to_string(tolerance) << endl;
 
   matrix M = read("./examples/" + input + ".txt");
-  //matrix L = buildLaplacianMatrix(M);
+  // matrix L = buildLaplacianMatrix(M);
 
   computeAndWriteOutSimilarityMatrix(input);
 

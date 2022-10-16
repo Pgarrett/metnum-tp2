@@ -7,15 +7,17 @@
 using namespace std;
 
 namespace VectorOperator {
-    double euclideanDistance(const vector<double> &v1, const vector<double> &v2);
+double kahanSum(const vector<double> &v);
 
-    void normalize(vector<double> &v);
+double euclideanDistance(const vector<double> &v1, const vector<double> &v2);
 
-    double norm2(const vector<double> &v);
+void normalize(vector<double> &v);
 
-    vector<double> scale(double scalar, const vector<double> &v);
+double norm2(const vector<double> &v);
 
-    vector<double> randomVector(int dimension);
+vector<double> scale(double scalar, const vector<double> &v);
 
-    double dotProduct(const vector<double> &v1, const vector<double> &v2);
-}
+vector<double> randomVector(int dimension);
+
+double dotProduct(const vector<double> &v1, const vector<double> &v2);
+} // namespace VectorOperator

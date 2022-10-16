@@ -4,6 +4,7 @@
 
 #include "Matrix.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
@@ -14,10 +15,8 @@
 #include <string>
 
 #include "Constants.h"
-#include "Matrix.h"
 #include "Vector.h"
 
-using namespace std;
 using namespace MatrixOperator;
 using namespace MatrixPrinter;
 using namespace VectorOperator;
@@ -57,6 +56,22 @@ matrix read(string filename) {
   return res;
 }
 
+matrix buildLaplacianMatrix(const matrix &a) {
+  matrix D;
+  for (double i = 0; i < a.size(); i++) {
+    vector<double> row(a.size());
+    double degree = 0;
+    for (double j = 0; j < a.size(); j++) {
+      degree += a[i][j];
+    }
+    row[i] = degree;
+    D.push_back(row);
+  }
+
+  substract(D, a);
+  return D;
+}
+
 bool allRowsHaveTheSameDimension(const matrix &m) {
   if (m.size() > 0) {
     int firstRowDimension = m[1].size();
@@ -87,11 +102,11 @@ vector<double> multiplyMatrixByVector(const matrix &m,
   vector<double> result;
   for (int i = 0; i < m.size(); ++i) {
     vector<double> row = m[i];
-    double resi = 0;
+    vector<double> products_vector;
     for (int j = 0; j < row.size(); ++j) {
-      resi += row[j] * v[j];
+      products_vector.push_back(row[j] * v[j]);
     }
-    result.push_back(resi);
+    result.push_back(kahanSum(products_vector));
   }
 
   return result;
@@ -100,10 +115,7 @@ vector<double> multiplyMatrixByVector(const matrix &m,
 eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
   assert(m.size() != 0);
 
-  cout << "about to apply power method to matrix: " << endl;
-  printMatrix(m);
-
-  vector<double> initialVector = randomVector(m[1].size());
+  vector<double> initialVector(m[1].size(), 1);
   eigenPair p;
   vector<double> previousVector = initialVector;
 
@@ -111,13 +123,15 @@ eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
     vector<double> multipliedVector = multiplyMatrixByVector(m, previousVector);
     p.eigenvector = scale(1 / norm2(multipliedVector), multipliedVector);
     if (euclideanDistance(p.eigenvector, previousVector) < epsilon) {
+      // std::cout << "criterio de corte aplicado" << std::endl;
       break;
     }
     previousVector = p.eigenvector;
   }
 
-  normalize(p.eigenvector);
-  p.eigenvalue = dotProduct(p.eigenvector, multiplyMatrixByVector(m, p.eigenvector));
+  // normalize(p.eigenvector);
+  p.eigenvalue =
+      dotProduct(p.eigenvector, multiplyMatrixByVector(m, p.eigenvector));
   return p;
 }
 
@@ -150,40 +164,43 @@ matrix outerProduct(vector<double> &u, vector<double> &v) {
 }
 
 double innerProduct(vector<double> &u, vector<double> &v) {
-    assert(u.size() == v.size());
-    double result = 0;
-    for (double i = 0; i < u.size(); ++i) {
-        result += u[i] * v[i];
-    }
-    return result;
+  assert(u.size() == v.size());
+  vector<double> products_vector;
+  double result = 0;
+  for (double i = 0; i < u.size(); ++i) {
+    products_vector.push_back(u[i] * v[i]);
+  }
+  return kahanSum(products_vector);
 }
 
 matrix similarityMatrix(const matrix &a) {
-    vector<double> rowOf0(a.size(), 0);
-    matrix similarity(a.size(), rowOf0);
+  vector<double> rowOf0(a.size(), 0);
+  matrix similarity(a.size(), rowOf0);
 
-    for (double i = 0; i < a.size(); ++i) {
-        for (double j = 0; j < a.size(); ++j) {
-            vector<double> iVector = a[i];
-            vector<double> jVector = a[j];
-            double innerProductIJ = innerProduct(iVector, jVector);
-            similarity[i][j] = innerProductIJ;
-        }
+  for (double i = 0; i < a.size(); ++i) {
+    for (double j = 0; j < a.size(); ++j) {
+      vector<double> iVector = a[i];
+      vector<double> jVector = a[j];
+      double innerProductIJ = innerProduct(iVector, jVector);
+      similarity[i][j] = innerProductIJ;
     }
-    return similarity;
+  }
+  return similarity;
 }
 
 void deleteMaxEigenValue(matrix &m, double a, vector<double> v) {
-  matrix subtrahend = outerProduct(v, v);
-  scaleMatrix(subtrahend, a);
+  vector<double> scaled = scale(a, v);
+  matrix subtrahend = outerProduct(scaled, v);
   substract(m, subtrahend);
 }
 
-vector<eigenPair> deflationMethod(const matrix m, int iterations, double epsilon) {
+vector<eigenPair> deflationMethod(const matrix &m, int iterations,
+                                  double epsilon) {
   matrix A = m;
   vector<eigenPair> result;
   eigenPair p;
   for (int i = 0; i < m.size(); i++) {
+    // std::cout << "Running deflation, iteration: " << i << std::endl;
     p = powerMethod(A, iterations, epsilon);
     result.push_back(p);
     deleteMaxEigenValue(A, p.eigenvalue, p.eigenvector);

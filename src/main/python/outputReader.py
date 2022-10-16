@@ -5,10 +5,14 @@ import os
 def readOutputFile(file):
     if cfg.debug:
         print("Reading output file ", file)
-    resultsPath = str(os.getcwd()) + '/results/'
-    eigenVectors = open(resultsPath + file + "_eigenVectors.csv", "r")
-    eigenValues = open(resultsPath + file + "_eigenValues.csv", "r")
-    return eigenValues, eigenVectors
+    outputEigenVectors = readEigenVectors(file + "_eigenVectors.csv")
+    outputEigenValues = readEigenValues(file + "_eigenValues.csv")
+    if cfg.debug:
+        print("\nread matrix")
+        print(outputEigenVectors)
+        print("\nread outputEigenValues")
+        print(outputEigenValues)
+    return outputEigenValues, np.transpose(toNumpyMatrix(outputEigenVectors))
 
 def toNumpyMatrix(matrix):
     np_arrays = []
@@ -64,4 +68,10 @@ def readEigenVectors(filename):
             vectorI = list(map(lambda x: float(x), l[i][:-3].split(", ")))
             vectorList.append(vectorI)
     return vectorList
+
+def writeOutProximity(results):
+    path = str(os.getcwd()) + "/results/"
+    with open(path, 'proximity.txt') as f:
+        for pair in results:
+            f.write(pair)
 

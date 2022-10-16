@@ -1,4 +1,4 @@
 compareToleranceEpsilon=1e-2
-iterations=1e5
-powerMethodEpsilon=1e-6
+iterations=3e5
+powerMethodEpsilon=1e-7
 debug=False
