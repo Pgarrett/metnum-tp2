@@ -11,9 +11,7 @@ using namespace VectorOperator;
 namespace VectorOperator {
 double kahanSum(const vector<double> &v) {
   double sum = 0.0;
-
   double c = 0.0;
-
   for (double n : v) {
     double y = n - c;
     double t = sum + y;
@@ -37,9 +35,6 @@ void normalize(vector<double> &v) {
   double norm = norm2(v);
   for (double i = 0; i < v.size(); ++i) {
     v[i] = v[i] / norm;
-    if (v[i] < (1 * 10 ^ -6)) {
-      v[i] = 0;
-    }
   }
 }
 

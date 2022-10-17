@@ -114,21 +114,17 @@ vector<double> multiplyMatrixByVector(const matrix &m,
 
 eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
   assert(m.size() != 0);
-
-  vector<double> initialVector(m[1].size(), 1);
   eigenPair p;
-  vector<double> previousVector = initialVector;
+  vector<double> previousVector = randomVector(m[0].size());
 
   for (int i = 0; i < iterations; ++i) {
     vector<double> multipliedVector = multiplyMatrixByVector(m, previousVector);
     p.eigenvector = scale(1 / norm2(multipliedVector), multipliedVector);
     if (euclideanDistance(p.eigenvector, previousVector) < epsilon) {
-      // std::cout << "criterio de corte aplicado" << std::endl;
       break;
     }
     previousVector = p.eigenvector;
   }
-
   // normalize(p.eigenvector);
   p.eigenvalue =
       dotProduct(p.eigenvector, multiplyMatrixByVector(m, p.eigenvector));
@@ -200,7 +196,6 @@ vector<eigenPair> deflationMethod(const matrix &m, int iterations,
   vector<eigenPair> result;
   eigenPair p;
   for (int i = 0; i < m.size(); i++) {
-    // std::cout << "Running deflation, iteration: " << i << std::endl;
     p = powerMethod(A, iterations, epsilon);
     result.push_back(p);
     deleteMaxEigenValue(A, p.eigenvalue, p.eigenvector);
@@ -211,7 +206,6 @@ vector<eigenPair> deflationMethod(const matrix &m, int iterations,
 
 namespace MatrixPrinter {
 void printMatrix(const matrix &m) {
-  cout << "matrix: " << endl;
   for (int i = 0; i < m.size(); ++i) {
     cout << "[";
     vector<double> row = m[i];

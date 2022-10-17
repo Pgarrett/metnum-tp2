@@ -50,26 +50,28 @@ def numpyGenerator(n):
 	c = c[ix]
 	A[r,c] = 1
 	A = A + A.T
-	print(A)
 	np.set_printoptions(suppress=True)
 	np.savetxt('./examples/autogen/matrix_' + str(n) + '.txt', A, fmt='%i')
 
-def runTestsForNumpyGen(n):
+def runTestsForNumpyGen(n, shouldExecute):
 	target = 'autogen/matrix_' + str(n)
-	exec.runTpFor(target)
+	if shouldExecute:
+		exec.runTpFor(target)
 	print("\nRunning tests for " + target + ":")
 	testPowerMethod(target)
 	testDeflationMethod(target)
 	testSimilarityMatrix(target)
+	# name = "matrix_" + str(n)
+	# cmp.compareProximityToNumpy(name)
 
-def testNumpyCases():
-	# for n in range(3, 4)
-	n = 10
-	# numpyGenerator(n)
-	runTestsForNumpyGen(n)
+def testNumpyCases(shouldExecute = False):
+	cases = [10, 15, 20, 25, 30]
+	for case in cases:
+		numpyGenerator(case)
+		runTestsForNumpyGen(case, shouldExecute)
 
 
 # numpyGenerator()
-# testNumpyCases()
-runTestsFor('karateclub')
+testNumpyCases(True)
+# runTestsFor('karateclub_laplacian')
 # testProximityToNumpy('karateclub')

@@ -69,9 +69,9 @@ def readEigenVectors(filename):
             vectorList.append(vectorI)
     return vectorList
 
-def writeOutProximity(results):
+def writeOutProximity(file, results):
     path = str(os.getcwd()) + "/results/"
-    with open(path, 'proximity.txt') as f:
-        for pair in results:
-            f.write(pair)
+    name = file + "_proximity.txt"
+    with open(path+name, "w") as output:
+        output.write(", ".join([str(n) for n in results]))
 
