@@ -60,6 +60,7 @@ def readEigenValues(filename):
         l = [float(line[:-2]) for line in l]
     return l 
 
+
 def readEigenVectors(filename):
     with open(filename, "r") as file:
         l = [line for line in file]
@@ -68,6 +69,14 @@ def readEigenVectors(filename):
             vectorI = list(map(lambda x: float(x), l[i][:-3].split(", ")))
             vectorList.append(vectorI)
     return vectorList
+
+def readLabels(filename):
+    labels = []
+    with open(filename, "r") as file:
+        l = [line for line in file]
+        for i in range(0, len(l)):
+            labels.append(float(l[i]))
+    return labels
 
 def writeOutProximity(file, results):
     path = str(os.getcwd()) + "/results/"

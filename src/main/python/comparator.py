@@ -77,3 +77,13 @@ def eigenVectorDifference(npVectors, cppVectors, inputCppFile):
         result.append(np.linalg.norm(npv-cpv))
     outr.writeOutProximity(inputCppFile, result)
 
+def bestPrediction():
+    results = []
+    _, eigVec = outr.readOutputFile('./results/karateclub_laplacian')
+    groupsVector = outr.readLabels('./examples/karateclub_labels.txt')
+    for vector in eigVec:
+        prediction = np.corrcoef(vector, groupsVector)[0][1]
+        print(prediction)
+        results.append(prediction)
+    return results
+

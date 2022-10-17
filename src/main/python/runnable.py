@@ -70,8 +70,8 @@ def testNumpyCases(shouldExecute = False):
 		numpyGenerator(case)
 		runTestsForNumpyGen(case, shouldExecute)
 
-
 # numpyGenerator()
-testNumpyCases(True)
+# testNumpyCases(True)
 # runTestsFor('karateclub_laplacian')
 # testProximityToNumpy('karateclub')
+cmp.bestPrediction()
