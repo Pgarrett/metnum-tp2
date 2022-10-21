@@ -10,9 +10,9 @@ using namespace IO;
 using namespace std;
 
 void computeAndWriteOutSimilarityMatrix(const string input) {
-  matrix M = read("./examples/" + input + ".txt");
-  matrix S = similarityMatrix(M);
-  writeOutMatrix(S, "./results/" + input + "_similarityMatrix.csv");
+  SparseMatrix<double> M = read("./examples/" + input + ".txt");
+  //matrix S = similarityMatrix(M);
+  //writeOutMatrix(S, "./results/" + input + "_similarityMatrix.csv");
 }
 
 int main(int argc, char *argv[]) {
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   cout << "Con iteraciones: " << to_string(iterations) << endl;
   cout << "Con tolerancia: " << to_string(tolerance) << endl;
 
-  matrix M = read("./examples/" + input + ".txt");
+    SparseMatrix<double> M = read("./examples/" + input + ".txt");
   // matrix L = buildLaplacianMatrix(M);
 
   computeAndWriteOutSimilarityMatrix(input);

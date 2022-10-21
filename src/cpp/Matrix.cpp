@@ -36,24 +36,30 @@ list<string> split(string originalString, char delim) {
 }
 
 namespace MatrixOperator {
-matrix read(string filename) {
+
+SparseMatrix<double> read(string filename) {
   ifstream file(filename.c_str());
   matrix res;
   string line, temp;
   // build matrix
+  vector<Triplet<double>> inputReader;
+  int rowNumber = 0;
   while (getline(file, line)) {
-    vector<double> row;
     list<string> linkList = split(line, ' ');
     auto current = linkList.begin();
     auto last = linkList.end();
+    int columnNumber = 0;
     while (current != last) {
       const string &ref = *current;
-      row.push_back(stoi(ref));
+      inputReader.push_back(Triplet(rowNumber, columnNumber, stod(ref)));
       current = std::next(current, 1);
+      columnNumber++;
     }
-    res.push_back(row);
+    rowNumber++;
   }
-  return res;
+  SparseMatrix<double> result(rowNumber, rowNumber);
+  result.setFromTriplets(inputReader.begin(), inputReader.end());
+  return result;
 }
 
 matrix buildLaplacianMatrix(const matrix &a) {
@@ -74,8 +80,8 @@ matrix buildLaplacianMatrix(const matrix &a) {
 
 bool allRowsHaveTheSameDimension(const matrix &m) {
   if (m.size() > 0) {
-    int firstRowDimension = m[1].size();
-    for (int i = 0; i < m.size(); ++i) {
+    unsigned long firstRowDimension = m[1].size();
+    for (unsigned long i = 0; i < m.size(); ++i) {
       if (m[i].size() != firstRowDimension) {
         return false;
       }
@@ -100,10 +106,10 @@ vector<double> multiplyMatrixByVector(const matrix &m,
   assert(matrixVectorMultiplicationIsPossible(m, v));
 
   vector<double> result;
-  for (int i = 0; i < m.size(); ++i) {
+  for (unsigned long i = 0; i < m.size(); ++i) {
     vector<double> row = m[i];
     vector<double> products_vector;
-    for (int j = 0; j < row.size(); ++j) {
+    for (unsigned long j = 0; j < row.size(); ++j) {
       products_vector.push_back(row[j] * v[j]);
     }
     result.push_back(kahanSum(products_vector));
@@ -112,36 +118,17 @@ vector<double> multiplyMatrixByVector(const matrix &m,
   return result;
 }
 
-eigenPair powerMethod(const matrix &m, int iterations, double epsilon) {
-  assert(m.size() != 0);
-  eigenPair p;
-  vector<double> previousVector = randomVector(m[0].size());
-
-  for (int i = 0; i < iterations; ++i) {
-    vector<double> multipliedVector = multiplyMatrixByVector(m, previousVector);
-    p.eigenvector = scale(1 / norm2(multipliedVector), multipliedVector);
-    if (euclideanDistance(p.eigenvector, previousVector) < epsilon) {
-      break;
-    }
-    previousVector = p.eigenvector;
-  }
-  // normalize(p.eigenvector);
-  p.eigenvalue =
-      dotProduct(p.eigenvector, multiplyMatrixByVector(m, p.eigenvector));
-  return p;
-}
-
 void substract(matrix &a, const matrix &b) {
-  for (int i = 0; i < a.size(); i++) {
-    for (int j = 0; j < a.size(); j++) {
+  for (unsigned long i = 0; i < a.size(); i++) {
+    for (unsigned long j = 0; j < a.size(); j++) {
       a[i][j] = a[i][j] - b[i][j];
     }
   }
 }
 
 void scaleMatrix(matrix &m, double c) {
-  for (int i = 0; i < m.size(); i++) {
-    for (int j = 0; j < m.size(); j++) {
+  for (unsigned long i = 0; i < m.size(); i++) {
+    for (unsigned long j = 0; j < m.size(); j++) {
       m[i][j] = m[i][j] * c;
     }
   }
@@ -149,9 +136,9 @@ void scaleMatrix(matrix &m, double c) {
 
 matrix outerProduct(vector<double> &u, vector<double> &v) {
   matrix result;
-  for (int i = 0; i < u.size(); i++) {
+  for (unsigned long i = 0; i < u.size(); i++) {
     vector<double> row;
-    for (int j = 0; j < u.size(); j++) {
+    for (unsigned long j = 0; j < u.size(); j++) {
       row.push_back(u[i] * v[j]);
     }
     result.push_back(row);
@@ -162,54 +149,75 @@ matrix outerProduct(vector<double> &u, vector<double> &v) {
 double innerProduct(vector<double> &u, vector<double> &v) {
   assert(u.size() == v.size());
   vector<double> products_vector;
-  double result = 0;
   for (double i = 0; i < u.size(); ++i) {
     products_vector.push_back(u[i] * v[i]);
   }
   return kahanSum(products_vector);
 }
 
-matrix similarityMatrix(const matrix &a) {
+matrix similarityMatrix(const SparseMatrix<double> &a) {
   vector<double> rowOf0(a.size(), 0);
   matrix similarity(a.size(), rowOf0);
 
   for (double i = 0; i < a.size(); ++i) {
     for (double j = 0; j < a.size(); ++j) {
-      vector<double> iVector = a[i];
-      vector<double> jVector = a[j];
-      double innerProductIJ = innerProduct(iVector, jVector);
-      similarity[i][j] = innerProductIJ;
+//      vector<double> iVector = a[i];
+//      vector<double> jVector = a[j];
+//      double innerProductIJ = innerProduct(iVector, jVector);
+//      similarity[i][j] = innerProductIJ;
     }
   }
   return similarity;
 }
 
-void deleteMaxEigenValue(matrix &m, double a, vector<double> v) {
-  vector<double> scaled = scale(a, v);
-  matrix subtrahend = outerProduct(scaled, v);
-  substract(m, subtrahend);
+eigenPair power_iteration(const Matrix<double, Dynamic, Dynamic, RowMajor> &m, unsigned int iterations, double epsilon) {
+    VectorXd previousVector = VectorXd::Random(m.cols());
+    EP2 result;
+
+    for (unsigned int i = 0; i < iterations; i++) {
+        VectorXd multipliedVector = m * previousVector;
+        multipliedVector = multipliedVector / multipliedVector.norm();
+        double cos_angle = multipliedVector.transpose() * previousVector;
+        previousVector = multipliedVector;
+        if ((1 - epsilon) < cos_angle && cos_angle <= 1) {
+            break;
+        }
+    }
+
+    eigenPair eigenPair;
+
+    eigenPair.eigenvalue = previousVector.transpose() * m * previousVector;
+    for (VectorXd::iterator it = previousVector.begin(); it != previousVector.end(); it++) {
+        eigenPair.eigenvector.push_back(*it);
+    }
+    return eigenPair;
 }
 
-vector<eigenPair> deflationMethod(const matrix &m, int iterations,
-                                  double epsilon) {
-  matrix A = m;
-  vector<eigenPair> result;
-  eigenPair p;
-  for (int i = 0; i < m.size(); i++) {
-    p = powerMethod(A, iterations, epsilon);
-    result.push_back(p);
-    deleteMaxEigenValue(A, p.eigenvalue, p.eigenvector);
-  }
+vector<eigenPair> deflationMethod(const Matrix<double, Dynamic, Dynamic, RowMajor> &m, int iterations, double epsilon) {
+    Matrix<double, Dynamic, Dynamic, RowMajor> A = m;
+    vector<eigenPair> result;
+    double a = 0;
+    VectorXd v = VectorXd::Zero(A.rows());
+    eigenPair p;
+    for (int i = 0; i < m.rows(); i++)
+    {
+        A = A - (a * v * v.transpose());
+        p = power_iteration(A, iterations, epsilon);
+        result.push_back(p);
+        a = p.eigenvalue;
+        vector<double> ev = p.eigenvector;
+        v = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(ev.data(), ev.size());
+    }
   return result;
 }
 } // namespace MatrixOperator
 
 namespace MatrixPrinter {
 void printMatrix(const matrix &m) {
-  for (int i = 0; i < m.size(); ++i) {
+  for (unsigned long i = 0; i < m.size(); ++i) {
     cout << "[";
     vector<double> row = m[i];
-    for (int j = 0; j < row.size(); ++j) {
+    for (unsigned long j = 0; j < row.size(); ++j) {
       cout << row[j];
       if (j < row.size() - 1) {
         cout << ", ";
