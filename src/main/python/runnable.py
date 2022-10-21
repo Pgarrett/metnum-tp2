@@ -2,6 +2,8 @@ import outputReader as outr
 import comparator as cmp
 import executor as exec
 import numpy as np
+import utils
+import graphs
 
 def testPowerMethod(s):
 	testResult = cmp.comparePowerMethod(s)
@@ -75,8 +77,13 @@ def testPrediction(shouldExecute = False):
 	prediction = cmp.bestPrediction()
 	cmp.generateNetworkGraph(prediction)
 
+def Facebook():
+	utils.buildAdjacencyMatrixFromFacebookEdges()
+	utils.filterNodesFromFeatures()
+
 # numpyGenerator()
 # testNumpyCases(True)
 # runTestsFor('karateclub_laplacian')
 # testProximityToNumpy('karateclub')
 # testPrediction()
+# Facebook()

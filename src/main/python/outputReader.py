@@ -84,3 +84,23 @@ def writeOutProximity(file, results):
     with open(path+name, "w") as output:
         output.write(", ".join([str(n) for n in results]))
 
+def writeOutAdjacencyMatrix(file, matrix):
+    path = str(os.getcwd()) + "/results/"
+    with open(path + file, "w") as output:
+        for row in matrix:
+            output.write(", ".join([str(n) for n in row]))
+            output.write("\n")
+
+# Delete lines that don't belong to facebook nodes
+def filterNodesFromFeatures(nodes):
+    read_path = str(os.getcwd()) + "/examples/ego-facebook.feat"
+    with open(read_path, "r") as input:
+        lines = input.readlines()
+
+    write_path = str(os.getcwd()) + "/examples/ego-facebook-filtered.feat"
+    with open(write_path, "w") as output:
+        for line in lines:
+            node = int(line.split(None, 1)[0])
+            if node in nodes.keys():
+                output.write(line)
+
