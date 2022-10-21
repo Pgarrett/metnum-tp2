@@ -2,9 +2,7 @@ import config as cfg
 import numpy as np
 import numpySolver as npt
 import outputReader as outr
-import asserter as asrt
-import matplotlib.pyplot as plt
-import networkx as nx
+import utils
 
 def comparePowerMethod(inputCppFile):
     numpyEighVal, numpyEighVec = npt.solve("./examples/" + inputCppFile  + ".txt")
@@ -12,20 +10,9 @@ def comparePowerMethod(inputCppFile):
     return assertMaxValuesAreClose(numpyEighVal, np.transpose(numpyEighVec), cppEighValues, cppEighVectors)
 
 def assertMaxValuesAreClose(numpyEighVal, numpyEighVec, cppEighVal, cppEighVec):
-    _, maxNumpyEighVec = getHighestEigh(numpyEighVal, numpyEighVec)
-    _, maxCppEighVec = getHighestEigh(cppEighVal, cppEighVec)
+    _, maxNumpyEighVec = utils.getHighestEigh(numpyEighVal, numpyEighVec)
+    _, maxCppEighVec = utils.getHighestEigh(cppEighVal, cppEighVec)
     return vectorsAreClose(maxCppEighVec, maxNumpyEighVec)
-
-def getHighestEigh(eighVal, eighVect):
-    maxEighValIndex = np.argmax(eighVal)
-    maxEighVal = eighVal[maxEighValIndex]
-    maxEighVec = eighVect[maxEighValIndex]
-    if cfg.debug:
-        print("Max Eighenvalue:")
-        print(maxEighVal)
-        print("Max Eighenvector:")
-        print(maxEighVec)
-    return maxEighVal, maxEighVec
 
 def compareDeflationMethod(inputCppFile):
     numpyEighVal, numpyEighVec = npt.solve("./examples/" + inputCppFile  + ".txt")
@@ -45,8 +32,8 @@ def compareSimilarityMethod(inputCppFile, outputCppFile):
     return numpySimilarityMatrix == cppSimilarityMatrix
 
 def compareProximityToNumpy(inputCppFile):
-    npEigVal, numpyEighVec = npt.solve("./examples/autogen/" + inputCppFile  + ".txt")
-    cppEigVal, cppEighVectors = outr.readOutputFile("./results/autogen/" + inputCppFile)
+    _, numpyEighVec = npt.solve("./examples/autogen/" + inputCppFile  + ".txt")
+    _, cppEighVectors = outr.readOutputFile("./results/autogen/" + inputCppFile)
     eigenVectorDifference(np.transpose(numpyEighVec), cppEighVectors, inputCppFile)
 
 def vectorsAreClose(v1, v2):
@@ -91,34 +78,3 @@ def bestPrediction():
             result = [i+1, prediction, vector]
     print('Autovector más cercano: V_' + str(result[0]) + ', con correlación: ' + str(result[1]))
     return result[2]
-
-def generateNetworkGraph(v):
-    G = nx.Graph()
-    group_0 =  []
-    group_1 = []
-    for index, value in enumerate(v):
-        if value <= 0:
-            group_0.append(index + 1)
-        else:
-            group_1.append(index+1)
-    for i in range(len(group_0) - 1):
-        G.add_edge(group_0[i], group_0[i+1])
-    G.add_edge(group_0[0], group_0[-1])
-    for i in range(len(group_1) - 1):
-        G.add_edge(group_1[i], group_1[i+1])
-    G.add_edge(group_1[0], group_1[-1])
-
-    color_map = []
-    for node in G:
-        if node in group_0:
-            color_map.append('tab:blue')
-        else: 
-            color_map.append('tab:green')
-
-    pos = nx.spring_layout(G)
-
-    # guardar grafo
-    f = plt.figure()
-    nx.draw(G, node_color=color_map, font_color="whitesmoke", with_labels=True)
-    f.savefig('prediccion.png')
-
