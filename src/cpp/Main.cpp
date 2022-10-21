@@ -11,8 +11,8 @@ using namespace std;
 
 void computeAndWriteOutSimilarityMatrix(const string input) {
   SparseMatrix<double> M = read("./examples/" + input + ".txt");
-//  matrix S = similarityMatrix(M);
-//  writeOutMatrix(S, "./results/" + input + "_similarityMatrix.csv");
+  //matrix S = similarityMatrix(M);
+  //writeOutMatrix(S, "./results/" + input + "_similarityMatrix.csv");
 }
 
 int main(int argc, char *argv[]) {

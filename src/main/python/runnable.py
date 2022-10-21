@@ -4,6 +4,7 @@ import executor as exec
 import numpy as np
 import utils
 import graphs
+import config as cfg
 
 def testPowerMethod(s):
 	testResult = cmp.comparePowerMethod(s)
@@ -42,7 +43,7 @@ def runTestsFor(file, shouldExecute = False, iterations = None, epsilon = None):
 	print("\nRunning tests for: " + file)
 	testPowerMethod(file)
 	testDeflationMethod(file)
-	testSimilarityMatrix(file)
+	#testSimilarityMatrix(file)
 
 def numpyGenerator(n):
 	m = int((n*(n-1))/4)
@@ -63,13 +64,17 @@ def runTestsForNumpyGen(n, shouldExecute):
 	print("\nRunning tests for " + target + ":")
 	testPowerMethod(target)
 	testDeflationMethod(target)
-	testSimilarityMatrix(target)
+	#testSimilarityMatrix(target)
+	# name = "matrix_" + str(n)
+	# cmp.compareProximityToNumpy(name)
 
-def testNumpyCases(shouldExecute = False):
-	cases = [10, 15, 20, 25, 30]
-	for case in cases:
-		numpyGenerator(case)
-		runTestsForNumpyGen(case, shouldExecute)
+def runTestsForHandExamples(n, shouldExecute):
+	target = 'test_deflation_' + str(n)
+	if shouldExecute:
+		exec.runTpFor(target)
+	print("Running test_deflation_ " + target + ": ")
+	testPowerMethod(target)
+	testDeflationMethod(target)
 
 def testPrediction(shouldExecute = False):
 	if shouldExecute:
@@ -77,9 +82,49 @@ def testPrediction(shouldExecute = False):
 	prediction = cmp.bestPrediction()
 	cmp.generateNetworkGraph(prediction)
 
+
 def Facebook():
 	utils.buildAdjacencyMatrixFromFacebookEdges()
 	utils.filterNodesFromFeatures()
+
+def testNumpyCases(shouldExecute = False):
+	#cases = [10, 15, 20, 25, 30]
+	#for case in cases:
+	#	numpyGenerator(case)
+	#	runTestsForNumpyGen(case, shouldExecute)
+	for i in range(1,4):
+		runTestsForHandExamples(i, shouldExecute)
+
+def readInput(input):
+	matrixText = open(input, "r")
+	matrix = [list(map(int, line.split())) for line in matrixText]
+	np_arrays = []
+	for arr in matrix:
+		np_arrays.append(np.array(arr[1:len(arr)]))
+	return np_arrays
+
+def calculateSimilarity(input):
+	fbInput = readInput(input)
+	if cfg.debug:
+		print("Input:")
+		print(fbInput)
+	fbInputTranspose = np.transpose(fbInput)
+	if cfg.debug:
+		print("InputTranspose:")
+		print(fbInputTranspose)
+	similarity = fbInput @ fbInputTranspose
+	if cfg.debug:
+		print("Similarity:")
+		print(similarity)
+	return similarity
+
+def buildTestSimilarity():
+	calculateSimilarity("./examples/scratch.txt")
+
+def buildFbSimilarity():
+	similarity = calculateSimilarity("./examples/ego-facebook.feat")
+	np.set_printoptions(suppress=True)
+	np.savetxt('./examples/fb_similarity.txt', similarity, fmt='%i')
 
 # numpyGenerator()
 # testNumpyCases(True)
@@ -87,3 +132,5 @@ def Facebook():
 # testProximityToNumpy('karateclub')
 # testPrediction()
 # Facebook()
+# buildTestSimilarity()
+buildFbSimilarity()
