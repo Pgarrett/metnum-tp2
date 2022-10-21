@@ -1,6 +1,6 @@
 import config as cfg
 import numpy as np
-import io as outr
+import tpio as outr
 import os
 
 def buildLaplacianFor(input):

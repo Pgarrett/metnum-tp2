@@ -1,12 +1,12 @@
 import comparator as cmp
 import executor as exec
-import io as outr
+import tpio
 import numpySolver as npt
 import numpy as np
 import config as cfg
 import utils
 
-def testNumpyCases(shouldExecute = False):
+def testHandCases(shouldExecute = False):
     for i in range(1,4):
         runTestsForHandExamples(i, shouldExecute)
 
@@ -30,12 +30,12 @@ def testDeflationMethod(s):
 
 def comparePowerMethod(inputCppFile):
     numpyEighVal, numpyEighVec = npt.solve("./examples/" + inputCppFile  + ".txt")
-    cppEighValues, cppEighVectors = outr.readOutputFile("./results/" + inputCppFile)
+    cppEighValues, cppEighVectors = tpio.readOutputFile("./results/" + inputCppFile)
     return assertMaxValuesAreClose(numpyEighVal, np.transpose(numpyEighVec), cppEighValues, cppEighVectors)
 
 def compareDeflationMethod(inputCppFile):
     numpyEighVal, numpyEighVec = npt.solve("./examples/" + inputCppFile  + ".txt")
-    cppEighValues, cppEighVectors = outr.readOutputFile("./results/" + inputCppFile)
+    cppEighValues, cppEighVectors = tpio.readOutputFile("./results/" + inputCppFile)
     eighenValuesAreClose = vectorsAreClose(numpyEighVal, cppEighValues)
     if not eighenValuesAreClose:
         print("Eighenvalue compare failed")
@@ -72,3 +72,6 @@ def vectorListsAreClose(l1, l2):
             res = False
 
     return res
+
+
+testHandCases(True)

@@ -1,4 +1,4 @@
-import io as outr
+import tpio as outr
 import numpy as np
 import numpySolver as npt
 

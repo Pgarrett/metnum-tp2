@@ -1,6 +1,6 @@
 from tokenize import group
 import executor as exec
-import io as outr
+import tpio as outr
 import matplotlib.pyplot as plt
 import numpy as np
 import csv

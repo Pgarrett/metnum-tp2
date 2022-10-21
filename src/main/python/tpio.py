@@ -14,16 +14,19 @@ def readOutputFile(file):
         print(outputEigenValues)
     return outputEigenValues, np.transpose(toNumpyMatrix(outputEigenVectors))
 
+
 def toNumpyMatrix(matrix):
     np_arrays = []
     for arr in matrix:
         np_arrays.append(np.array(arr))
     return np_arrays
 
+
 def readOutputMatrixFile(filename):
     with open(filename, "r") as file:
         m = [[float(num) for num in line.split(", ")] for line in file]
     return m
+
 
 def readLabels():
     labelsPath = str(os.getcwd()) + '/examples/karateclub_labels.txt'
@@ -35,11 +38,12 @@ def readLabels():
                 labels.append(float(line))
     return labels
 
+
 def addLinks(input, dotFile):
     wd = str(os.getcwd())
     # get links
     links = []
-    with open(wd  + "/examples/" + input + ".txt", "r") as f:
+    with open(wd + "/examples/" + input + ".txt", "r") as f:
         graph_links = f.readlines()
         for line in graph_links:
             curr = []
@@ -47,18 +51,19 @@ def addLinks(input, dotFile):
                 if v == '0' or v == '1':
                     curr.append(v)
             links.append(curr)
-    
+
     with open(wd + "/graphs/" + dotFile + ".dot", "r") as f:
         lines = f.readlines
         for line in lines:
             print(line)
-            
+
+
 def readEigenValues(filename):
     with open(filename, "r") as file:
         l = [line for line in file]
         l.pop(0)
         l = [float(line[:-2]) for line in l]
-    return l 
+    return l
 
 
 def readEigenVectors(filename):
@@ -70,6 +75,7 @@ def readEigenVectors(filename):
             vectorList.append(vectorI)
     return vectorList
 
+
 def readLabels(filename):
     labels = []
     with open(filename, "r") as file:
@@ -78,11 +84,13 @@ def readLabels(filename):
             labels.append(float(l[i]))
     return labels
 
+
 def writeOutProximity(file, results):
     path = str(os.getcwd()) + "/results/"
     name = file + "_proximity.txt"
-    with open(path+name, "w") as output:
+    with open(path + name, "w") as output:
         output.write(", ".join([str(n) for n in results]))
+
 
 def writeOutAdjacencyMatrix(file, matrix):
     path = str(os.getcwd()) + "/results/"
@@ -90,6 +98,7 @@ def writeOutAdjacencyMatrix(file, matrix):
         for row in matrix:
             output.write(", ".join([str(n) for n in row]))
             output.write("\n")
+
 
 # Delete lines that don't belong to facebook nodes
 def filterNodesFromFeatures(nodes):
@@ -103,4 +112,3 @@ def filterNodesFromFeatures(nodes):
             node = int(line.split(None, 1)[0])
             if node in nodes.keys():
                 output.write(line)
-
