@@ -5,13 +5,8 @@
 #include "Matrix.h"
 
 #include <algorithm>
-#include <cassert>
-#include <cmath>
-#include <cstdlib>
-#include <cstring>
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
 
 #include "Constants.h"
@@ -62,117 +57,8 @@ SparseMatrix<double> read(string filename) {
   return result;
 }
 
-matrix buildLaplacianMatrix(const matrix &a) {
-  matrix D;
-  for (double i = 0; i < a.size(); i++) {
-    vector<double> row(a.size());
-    double degree = 0;
-    for (double j = 0; j < a.size(); j++) {
-      degree += a[i][j];
-    }
-    row[i] = degree;
-    D.push_back(row);
-  }
-
-  substract(D, a);
-  return D;
-}
-
-bool allRowsHaveTheSameDimension(const matrix &m) {
-  if (m.size() > 0) {
-    unsigned long firstRowDimension = m[1].size();
-    for (unsigned long i = 0; i < m.size(); ++i) {
-      if (m[i].size() != firstRowDimension) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-bool matrixColumnsAreTheSameDimensionAsVector(const matrix &m,
-                                              const vector<double> &v) {
-  return m[1].size() == v.size();
-}
-
-bool matrixVectorMultiplicationIsPossible(const matrix &m,
-                                          const vector<double> &v) {
-  return allRowsHaveTheSameDimension(m) &&
-         matrixColumnsAreTheSameDimensionAsVector(m, v);
-}
-
-vector<double> multiplyMatrixByVector(const matrix &m,
-                                      const vector<double> &v) {
-  assert(matrixVectorMultiplicationIsPossible(m, v));
-
-  vector<double> result;
-  for (unsigned long i = 0; i < m.size(); ++i) {
-    vector<double> row = m[i];
-    vector<double> products_vector;
-    for (unsigned long j = 0; j < row.size(); ++j) {
-      products_vector.push_back(row[j] * v[j]);
-    }
-    result.push_back(kahanSum(products_vector));
-  }
-
-  return result;
-}
-
-void substract(matrix &a, const matrix &b) {
-  for (unsigned long i = 0; i < a.size(); i++) {
-    for (unsigned long j = 0; j < a.size(); j++) {
-      a[i][j] = a[i][j] - b[i][j];
-    }
-  }
-}
-
-void scaleMatrix(matrix &m, double c) {
-  for (unsigned long i = 0; i < m.size(); i++) {
-    for (unsigned long j = 0; j < m.size(); j++) {
-      m[i][j] = m[i][j] * c;
-    }
-  }
-}
-
-matrix outerProduct(vector<double> &u, vector<double> &v) {
-  matrix result;
-  for (unsigned long i = 0; i < u.size(); i++) {
-    vector<double> row;
-    for (unsigned long j = 0; j < u.size(); j++) {
-      row.push_back(u[i] * v[j]);
-    }
-    result.push_back(row);
-  }
-  return result;
-}
-
-double innerProduct(vector<double> &u, vector<double> &v) {
-  assert(u.size() == v.size());
-  vector<double> products_vector;
-  for (double i = 0; i < u.size(); ++i) {
-    products_vector.push_back(u[i] * v[i]);
-  }
-  return kahanSum(products_vector);
-}
-
-matrix similarityMatrix(const SparseMatrix<double> &a) {
-  vector<double> rowOf0(a.size(), 0);
-  matrix similarity(a.size(), rowOf0);
-
-  for (double i = 0; i < a.size(); ++i) {
-    for (double j = 0; j < a.size(); ++j) {
-//      vector<double> iVector = a[i];
-//      vector<double> jVector = a[j];
-//      double innerProductIJ = innerProduct(iVector, jVector);
-//      similarity[i][j] = innerProductIJ;
-    }
-  }
-  return similarity;
-}
-
 eigenPair power_iteration(const Matrix<double, Dynamic, Dynamic, RowMajor> &m, unsigned int iterations, double epsilon) {
     VectorXd previousVector = VectorXd::Random(m.cols());
-    EP2 result;
 
     for (unsigned int i = 0; i < iterations; i++) {
         VectorXd multipliedVector = m * previousVector;

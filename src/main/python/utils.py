@@ -1,6 +1,6 @@
 import config as cfg
 import numpy as np
-import outputReader as outr
+import io as outr
 import os
 
 def buildLaplacianFor(input):

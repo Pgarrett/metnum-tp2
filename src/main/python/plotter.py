@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 
-def generateNetworkGraph(v):
+def generateNetworkPlot(v):
     G = nx.Graph()
     group_0 =  []
     group_1 = []
@@ -29,10 +29,19 @@ def generateNetworkGraph(v):
     nx.draw(G, node_color=color_map, font_color="whitesmoke", with_labels=True)
     f.savefig('prediccion.png')
 
-def generateGraphFromEdges(edges):
+def generatePlotFromEdges(edges):
     G = nx.Graph()
     G.add_edges_from(edges)
     pos = nx.spring_layout(G)
     f = plt.figure()
     nx.draw(G, pos=pos, node_size=0.5, node_color='blue', font_color="whitesmoke", with_labels=False)
     f.savefig('grafo.png')
+
+# iterate u values to form a line plot
+def generateUCutsForFlatten():
+
+# iterate u values to form a line plot
+def generateUCutsForEigenValues():
+
+# Maybe?
+# def generateUCutsForEigenValuesAndFlatten():
