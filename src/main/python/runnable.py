@@ -2,6 +2,7 @@ import outputReader as outr
 import comparator as cmp
 import executor as exec
 import numpy as np
+import config as cfg
 
 def testPowerMethod(s):
 	testResult = cmp.comparePowerMethod(s)
@@ -87,8 +88,41 @@ def testNumpyCases(shouldExecute = False):
 	for i in range(1,4):
 		runTestsForHandExamples(i, shouldExecute)
 
+def readInput(input):
+	matrixText = open(input, "r")
+	matrix = [list(map(int, line.split())) for line in matrixText]
+	np_arrays = []
+	for arr in matrix:
+		np_arrays.append(np.array(arr[1:len(arr)]))
+	return np_arrays
+
+def calculateSimilarity(input):
+	fbInput = readInput(input)
+	if cfg.debug:
+		print("Input:")
+		print(fbInput)
+	fbInputTranspose = np.transpose(fbInput)
+	if cfg.debug:
+		print("InputTranspose:")
+		print(fbInputTranspose)
+	similarity = fbInput @ fbInputTranspose
+	if cfg.debug:
+		print("Similarity:")
+		print(similarity)
+	return similarity
+
+def buildTestSimilarity():
+	calculateSimilarity("./examples/scratch.txt")
+
+def buildFbSimilarity():
+	similarity = calculateSimilarity("./examples/ego-facebook.feat")
+	np.set_printoptions(suppress=True)
+	np.savetxt('./examples/fb_similarity.txt', similarity, fmt='%i')
+
 # numpyGenerator()
-testNumpyCases(True)
+# testNumpyCases(True)
 # runTestsFor('karateclub_laplacian')
 # testProximityToNumpy('karateclub')
 # testPrediction()
+# buildTestSimilarity()
+buildFbSimilarity()
