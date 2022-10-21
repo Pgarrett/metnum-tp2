@@ -40,7 +40,7 @@ def runTestsFor(file, shouldExecute = False, iterations = None, epsilon = None):
 	print("\nRunning tests for: " + file)
 	testPowerMethod(file)
 	testDeflationMethod(file)
-	testSimilarityMatrix(file)
+	#testSimilarityMatrix(file)
 
 def numpyGenerator(n):
 	m = int((n*(n-1))/4)
@@ -61,13 +61,17 @@ def runTestsForNumpyGen(n, shouldExecute):
 	print("\nRunning tests for " + target + ":")
 	testPowerMethod(target)
 	testDeflationMethod(target)
-	testSimilarityMatrix(target)
+	#testSimilarityMatrix(target)
+	# name = "matrix_" + str(n)
+	# cmp.compareProximityToNumpy(name)
 
-def testNumpyCases(shouldExecute = False):
-	cases = [10, 15, 20, 25, 30]
-	for case in cases:
-		numpyGenerator(case)
-		runTestsForNumpyGen(case, shouldExecute)
+def runTestsForHandExamples(n, shouldExecute):
+	target = 'test_deflation_' + str(n)
+	if shouldExecute:
+		exec.runTpFor(target)
+	print("Running test_deflation_ " + target + ": ")
+	testPowerMethod(target)
+	testDeflationMethod(target)
 
 def testPrediction(shouldExecute = False):
 	if shouldExecute:
@@ -75,8 +79,16 @@ def testPrediction(shouldExecute = False):
 	prediction = cmp.bestPrediction()
 	cmp.generateNetworkGraph(prediction)
 
+def testNumpyCases(shouldExecute = False):
+	#cases = [10, 15, 20, 25, 30]
+	#for case in cases:
+	#	numpyGenerator(case)
+	#	runTestsForNumpyGen(case, shouldExecute)
+	for i in range(1,4):
+		runTestsForHandExamples(i, shouldExecute)
+
 # numpyGenerator()
-# testNumpyCases(True)
+testNumpyCases(True)
 # runTestsFor('karateclub_laplacian')
 # testProximityToNumpy('karateclub')
 # testPrediction()
