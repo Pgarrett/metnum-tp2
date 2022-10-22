@@ -5,8 +5,9 @@ import os
 def readOutputFile(file):
     if cfg.debug:
         print("Reading output file ", file)
-    outputEigenVectors = readEigenVectors(file + "_eigenVectors.csv")
-    outputEigenValues = readEigenValues(file + "_eigenValues.csv")
+    path = str(os.getcwd()) + "/results/"
+    outputEigenVectors = readEigenVectors(path + file + "_eigenVectors.csv")
+    outputEigenValues = readEigenValues(path + file + "_eigenValues.csv")
     if cfg.debug:
         print("\nread matrix")
         print(outputEigenVectors)
@@ -25,7 +26,7 @@ def readOutputMatrixFile(filename):
         m = [[float(num) for num in line.split(", ")] for line in file]
     return m
 
-def readLabels():
+def readKarateLabels():
     labelsPath = str(os.getcwd()) + '/examples/karateclub_labels.txt'
     labels = []
     with open(labelsPath, "r") as f:
@@ -34,24 +35,6 @@ def readLabels():
             if line == '1' or line == '0':
                 labels.append(float(line))
     return labels
-
-def addLinks(input, dotFile):
-    wd = str(os.getcwd())
-    # get links
-    links = []
-    with open(wd  + "/examples/" + input + ".txt", "r") as f:
-        graph_links = f.readlines()
-        for line in graph_links:
-            curr = []
-            for v in line:
-                if v == '0' or v == '1':
-                    curr.append(v)
-            links.append(curr)
-    
-    with open(wd + "/graphs/" + dotFile + ".dot", "r") as f:
-        lines = f.readlines
-        for line in lines:
-            print(line)
             
 def readEigenValues(filename):
     with open(filename, "r") as file:
