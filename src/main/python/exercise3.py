@@ -59,7 +59,7 @@ def run():
         eigenValueCorrelations.append(eigenValueCompare(adj, u, fbEigenValues))
 
     plot.generateUCutsForFlatten(flattenCorrelations)
-    plot.generateUCutsForFlatten(eigenValueCorrelations)
+    plot.generateUCutsForEigenValues(eigenValueCorrelations)
     plot.compareUCuts(flattenCorrelations, eigenValueCorrelations)
 
 
