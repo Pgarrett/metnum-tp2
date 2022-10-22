@@ -1,6 +1,6 @@
 import config as cfg
 import numpy as np
-import io as outr
+import tpio as outr
 import os
 
 def buildLaplacianFor(input):
@@ -33,37 +33,6 @@ def getHighestEigh(eighVal, eighVect):
         print("Max Eighenvector:")
         print(maxEighVec)
     return maxEighVal, maxEighVec
-
-def getFacebookEdges():
-    edges = []
-    path = os.getcwd() + '/examples/ego-facebook.edges'
-    with open(path, 'r') as file:
-        for line in file:
-            pair = [int(node.rstrip('\n')) for node in line.split(' ')]
-            edges.append((pair[0], pair[1]))
-    return edges
-
-# Return dictionay with facebook nodes and their oredered positions
-def sortFacebookNodes(edges):
-    result = {}
-    nodes = []
-    for n1, n2 in edges:
-        nodes.append(n1)
-        nodes.append(n2)
-    # remove duplicates
-    nodes = list(dict.fromkeys(nodes))
-    # sort nodes by label
-    nodes.sort()
-
-    for index, node in enumerate(nodes):
-        result[node] = index
-    return result
-
-# Delete lines that don't belong to facebook nodes
-def filterNodesFromFeatures():
-    edges = getFacebookEdges()
-    nodes = sortFacebookNodes(edges)
-    outr.filterNodesFromFeatures(nodes)
 
 def buildAdjacencyMatrixFromSimilarity(similarity, threshold):
     m = len(similarity)

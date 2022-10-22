@@ -1,4 +1,4 @@
-import io as outr
+import tpio as outr
 import comparator as cmp
 import executor as exec
 import numpy as np
@@ -24,8 +24,6 @@ def runTestsFor(file, shouldExecute = False, iterations = None, epsilon = None):
 	testDeflationMethod(file)
 	#testSimilarityMatrix(file)
 
-def numpyGenerzen/matrix_' + str(n) + '.txt', A, fmt='%i')
-
 def testPrediction(shouldExecute = False):
 	if shouldExecute:
 		exec.runTpFor('karateclub_laplacian')
@@ -36,8 +34,6 @@ def testPrediction(shouldExecute = False):
 def Facebook():
 	utils.buildAdjacencyMatrixFromFacebookEdges()
 	utils.filterNodesFromFeatures()
-
-
 
 def readInput(input):
 	matrixText = open(input, "r")
