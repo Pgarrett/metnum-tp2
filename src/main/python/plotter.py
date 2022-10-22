@@ -1,8 +1,10 @@
 import config as cfg
 import matplotlib.pyplot as plt
 import networkx as nx
+import pydot
+import os
 
-def generateNetworkPlot(v):
+def generateNetworkPlot(v, name):
     G = nx.Graph()
     group_0 =  []
     group_1 = []
@@ -26,9 +28,10 @@ def generateNetworkPlot(v):
             color_map.append('tab:green')
 
     # guardar grafo
+    path = os.getcwd() + '/graphs/'
     f = plt.figure()
     nx.draw(G, node_color=color_map, font_color="whitesmoke", with_labels=True)
-    f.savefig('prediccion.png')
+    f.savefig(path + name + '.png')
 
 def generatePlotFromEdges(edges):
     G = nx.Graph()
@@ -38,6 +41,42 @@ def generatePlotFromEdges(edges):
     nx.draw(G, pos=pos, node_size=0.5, node_color='blue', font_color="whitesmoke", with_labels=False)
     f.savefig('grafo.png')
 
+def centralityGraph(eigenvec):
+    x = list(range(1, len(eigenvec) + 1))
+    plt.xticks(x)
+    plt.xlabel("Nodos")
+    plt.ylabel("Centralidad")
+    plt.scatter(x, eigenvec, color="blue")
+    plt.show()
+
+def networkDotGraph():
+    path = os.getcwd()
+    graphs = pydot.graph_from_dot_file(path + "/graphs/centrality.dot")
+    graph = graphs[0]
+    links = []
+
+    with open(path + "/examples/karateclub.txt", "r") as f:
+        graph_links = f.readlines()
+        for line in graph_links:
+            curr = []
+            for v in line:
+                if v == '0' or v == '1':
+                    curr.append(v)
+            links.append(curr)
+
+    for i, edges in enumerate(links):
+        for j, edge in enumerate(edges):
+            if edge == '1' and i < j:
+                my_edge = pydot.Edge(str(i+1), str(j+1))
+                graph.add_edge(my_edge)
+            
+    graph.write_png(path + "/graphs/centrality_graph.png")
+
+# iterate u values to form a line plot
+# def generateUCutsForFlatten():
+
+# iterate u values to form a line plot
+# def generateUCutsForEigenValues():
 # iterate u values to form a line plot
 def generateUCutsForFlatten(flatCorrelations):
     plt.xlabel("Valor de corte (u)")

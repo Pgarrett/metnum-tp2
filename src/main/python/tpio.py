@@ -6,8 +6,9 @@ import pandas as pd
 def readOutputFile(file):
     if cfg.debug:
         print("Reading output file ", file)
-    outputEigenVectors = readEigenVectors(file + "_eigenVectors.csv")
-    outputEigenValues = readEigenValues(file + "_eigenValues.csv")
+    path = str(os.getcwd()) + "/results/"
+    outputEigenVectors = readEigenVectors(path + file + "_eigenVectors.csv")
+    outputEigenValues = readEigenValues(path + file + "_eigenValues.csv")
     if cfg.debug:
         print("\nread matrix")
         print(outputEigenVectors)
@@ -32,7 +33,7 @@ def readMatrixFile(filename):
         m = [[float(num) for num in line.split(" ")] for line in file]
     return [x[1:] for x in m]
 
-def readLabels():
+def readKarateLabels():
     labelsPath = str(os.getcwd()) + '/examples/karateclub_labels.txt'
     labels = []
     with open(labelsPath, "r") as f:
@@ -41,8 +42,7 @@ def readLabels():
             if line == '1' or line == '0':
                 labels.append(float(line))
     return labels
-
-
+            
 def addLinks(input, dotFile):
     wd = str(os.getcwd())
     # get links
@@ -68,7 +68,6 @@ def readEigenValues(filename):
         l.pop(0)
         l = [float(line[:-2]) for line in l]
     return l
-
 
 def readEigenVectors(filename):
     with open(filename, "r") as file:
