@@ -21,7 +21,8 @@ def buildSimilarityMatrix():
 
 # input: facebook.edges
 # output: facebook_edges_adj.txt
-#def transformFacebookEdgesToAdjacencyMatrix():
+def transformFacebookEdgesToAdjacencyMatrix():
+    return []
 
 # input: matrix, filename
 # output: file written (no output)

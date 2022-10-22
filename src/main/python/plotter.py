@@ -1,3 +1,4 @@
+import config as cfg
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -38,10 +39,28 @@ def generatePlotFromEdges(edges):
     f.savefig('grafo.png')
 
 # iterate u values to form a line plot
-def generateUCutsForFlatten():
+def generateUCutsForFlatten(flatCorrelations):
+    plt.xlabel("Valor de corte (u)")
+    plt.ylabel("Correlación")
+    plt.title("Correlación por flatten")
+    plt.plot(cfg.uValues, flatCorrelations, color="blue")
+    plt.legend()
+    plt.show()
 
 # iterate u values to form a line plot
-def generateUCutsForEigenValues():
+def generateUCutsForEigenValues(eigenValCorrelations):
+    plt.xlabel("Valor de corte (u)")
+    plt.ylabel("Correlación")
+    plt.title("Correlación por autovalores")
+    plt.plot(cfg.uValues, eigenValCorrelations, color="red")
+    plt.legend()
+    plt.show()
 
-# Maybe?
-# def generateUCutsForEigenValuesAndFlatten():
+def compareUCuts(flatCorrelations, eigenValCorrelations):
+    plt.xlabel("Valor de corte (u)")
+    plt.ylabel("Correlación")
+    plt.title("Comparación de correlación")
+    plt.plot(cfg.uValues, flatCorrelations, color="blue", label="Flatten")
+    plt.plot(cfg.uValues, eigenValCorrelations, color="red", label="Autovalores")
+    plt.legend()
+    plt.show()

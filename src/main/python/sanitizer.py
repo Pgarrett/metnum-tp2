@@ -15,7 +15,7 @@ def getFacebookEdges():
             edges.append((pair[0], pair[1]))
     return edges
 
-# Return dictionay with facebook nodes and their oredered positions
+# Return dictionay with facebook nodes and their ordered positions
 def sortFacebookEdges(edges):
     result = {}
     nodes = []
@@ -52,6 +52,6 @@ def sortFeat(filteredFeat):
     np.set_printoptions(suppress=True)
     np.savetxt('./examples/ego-facebook-sorted.txt', matrix, fmt='%i')
 
-def sanitize():
+def sanitizeFeat():
     filteredFeat = filterFeat()
     sortFeat(filteredFeat)
