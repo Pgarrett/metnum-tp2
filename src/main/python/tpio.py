@@ -1,6 +1,7 @@
 import config as cfg
 import numpy as np
 import os
+import pandas as pd
 
 def readOutputFile(file):
     if cfg.debug:
@@ -14,7 +15,6 @@ def readOutputFile(file):
         print(outputEigenValues)
     return outputEigenValues, np.transpose(toNumpyMatrix(outputEigenVectors))
 
-
 def toNumpyMatrix(matrix):
     np_arrays = []
     for arr in matrix:
@@ -27,6 +27,10 @@ def readOutputMatrixFile(filename):
         m = [[float(num) for num in line.split(", ")] for line in file]
     return m
 
+def readMatrixFile(filename):
+    with open(filename, "r") as file:
+        m = [[float(num) for num in line.split(" ")] for line in file]
+    return [x[1:] for x in m]
 
 def readLabels():
     labelsPath = str(os.getcwd()) + '/examples/karateclub_labels.txt'

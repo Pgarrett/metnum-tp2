@@ -37,8 +37,6 @@ def Facebook():
 	utils.buildAdjacencyMatrixFromFacebookEdges()
 	utils.filterNodesFromFeatures()
 
-
-
 def readInput(input):
 	matrixText = open(input, "r")
 	matrix = [list(map(int, line.split())) for line in matrixText]
