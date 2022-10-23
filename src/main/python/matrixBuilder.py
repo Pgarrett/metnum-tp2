@@ -45,15 +45,15 @@ def buildSimilarityMatrix():
 # input: facebook.edges
 # output: facebook_edges_adj.txt
 def transformFacebookEdgesToAdjacencyMatrix():
-    edges = tpio.readEdgesFile('/examples/ego-facebook.edges')
-    maxNode = 0
-    for edge in edges:
-        maxNode = max(maxNode, max(edge[0], edge[1]))
+    featureMatrix = tpio.readEdgesFile('/examples/ego-facebook-sorted.txt')
+    adjacencyMatrix = [[0] * len(featureMatrix) for _ in range(len(featureMatrix))]
+    edgesMatrix = tpio.readEdgesFile('/examples/ego-facebook.edges')
 
-    adjacencyMatrix = [[0] * maxNode] * maxNode
-    for edge in edges:
-        adjacencyMatrix[edge[0]-1][edge[1]-1] = 1
-        adjacencyMatrix[edge[1]-1][edge[0]-1] = 1
+    for edge in edgesMatrix:
+        indexNode1 = egoIndexByNodeNumber(edge[0], featureMatrix)
+        indexNode2 = egoIndexByNodeNumber(edge[1], featureMatrix)
+        adjacencyMatrix[indexNode1][indexNode2] = 1
+        adjacencyMatrix[indexNode2][indexNode1] = 1
 
     tpio.writeOutMatrix('/examples/ego-facebook-adj.txt', adjacencyMatrix)
     return adjacencyMatrix
@@ -61,4 +61,12 @@ def transformFacebookEdgesToAdjacencyMatrix():
 # input: matrix, filename
 # output: file written (no output)
 #def writeToDisk():
+
+def egoIndexByNodeNumber(number, featureMatrix):
+    nodeNumberList = [row[0] for row in featureMatrix]
+    for i in range(0, len(nodeNumberList)):
+        if nodeNumberList[i] == number:
+            return i
+
+    return -1   #if not present: we fail
 

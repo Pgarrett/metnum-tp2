@@ -4,7 +4,7 @@ import plotter as plot
 import executor as exec
 import tpio
 import numpy as np
-
+from pathlib import Path
 from scipy import stats
 
 def adjacencyByU(similarity, u):
@@ -40,7 +40,8 @@ def eigenValueCompare(adjacencyMatrix, u, fbEdgesEigenValues):
 
 def calculateFbEigenValues():
     inputPath = 'ego-facebook-adj'
-    exec.runTpFor(inputPath)
+    if not Path('/results/' + inputPath + '_eigenValues.csv').is_file():
+        exec.runTpFor(inputPath)
     return tpio.readEigenValues(inputPath)
 
 def correlation(v1, v2):
