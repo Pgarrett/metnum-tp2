@@ -34,8 +34,15 @@ def readMatrixFile(filename):
     return [x[1:] for x in m]
 
 def readEdgesFile(filename):
-    with open(filename, "r") as file:
+    inputPath = str(os.getcwd()) + filename
+    with open(inputPath, "r") as file:
         m = [[x for x in map(int,line.strip("\n").split(" "))] for line in file]
+    return m
+
+def readAdjFile(filename):
+    inputPath = str(os.getcwd()) + filename
+    with open(inputPath, "r") as file:
+        m = [[float(num) for num in line.split(" ")] for line in file]
     return m
 
 def readKarateLabels():
@@ -66,9 +73,9 @@ def addLinks(input, dotFile):
         for line in lines:
             print(line)
 
-
 def readEigenValues(filename):
-    with open(filename, "r") as file:
+    inputPath = str(os.getcwd()) + filename
+    with open(inputPath, "r") as file:
         l = [line for line in file]
         l.pop(0)
         l = [float(line[:-2]) for line in l]

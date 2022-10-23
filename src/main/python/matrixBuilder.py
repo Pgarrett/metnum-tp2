@@ -1,6 +1,8 @@
 import numpy as np
 import os
 import tpio
+from pathlib import Path
+import sanitizer
 
 # input: KarateKid
 # output: KarateKid_laplacian.txt
@@ -28,6 +30,9 @@ def buildLaplacianMatrix(input):
 # input: facebook_filtered_sorted.feat, por ahora va a ser scratch.txt
 # output: facebook_similarity.txt
 def buildSimilarityMatrix():
+    if not Path(str(os.getcwd()) + '/examples/ego-facebook-sorted.txt').is_file():
+        sanitizer.sanitizeFeat()
+
     egoM = tpio.readMatrixFile(str(os.getcwd()) + '/examples/ego-facebook-sorted.txt')
     transposedEgoM = np.transpose(egoM)
     similarity = egoM @ transposedEgoM
@@ -40,7 +45,7 @@ def buildSimilarityMatrix():
 # input: facebook.edges
 # output: facebook_edges_adj.txt
 def transformFacebookEdgesToAdjacencyMatrix():
-    edges = tpio.readEdgesFile(str(os.getcwd()) + '/examples/ego-facebook.edges')
+    edges = tpio.readEdgesFile('/examples/ego-facebook.edges')
     maxNode = 0
     for edge in edges:
         maxNode = max(maxNode, max(edge[0], edge[1]))
@@ -57,5 +62,3 @@ def transformFacebookEdgesToAdjacencyMatrix():
 # output: file written (no output)
 #def writeToDisk():
 
-buildSimilarityMatrix()
-transformFacebookEdgesToAdjacencyMatrix()
