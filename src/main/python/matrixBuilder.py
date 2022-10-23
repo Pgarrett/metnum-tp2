@@ -1,6 +1,6 @@
-from tpio import readMatrixFile
 import numpy as np
 import os
+import tpio
 
 # input: KarateKid
 # output: KarateKid_laplacian.txt
@@ -28,9 +28,9 @@ def buildLaplacianMatrix(input):
 # input: facebook_filtered_sorted.feat, por ahora va a ser scratch.txt
 # output: facebook_similarity.txt
 def buildSimilarityMatrix():
-    df = readMatrixFile(str(os.getcwd()) + '/examples/ego-facebook-sorted.txt')
-    transposedDf = np.transpose(df)
-    similarity = df @ transposedDf
+    egoM = tpio.readMatrixFile(str(os.getcwd()) + '/examples/ego-facebook-sorted.txt')
+    transposedEgoM = np.transpose(egoM)
+    similarity = egoM @ transposedEgoM
     return similarity
 
 # input: facebook_similarity.txt, u
@@ -40,10 +40,22 @@ def buildSimilarityMatrix():
 # input: facebook.edges
 # output: facebook_edges_adj.txt
 def transformFacebookEdgesToAdjacencyMatrix():
-    return []
+    edges = tpio.readEdgesFile(str(os.getcwd()) + '/examples/ego-facebook.edges')
+    maxNode = 0
+    for edge in edges:
+        maxNode = max(maxNode, max(edge[0], edge[1]))
+
+    adjacencyMatrix = [[0] * maxNode] * maxNode
+    for edge in edges:
+        adjacencyMatrix[edge[0]-1][edge[1]-1] = 1
+        adjacencyMatrix[edge[1]-1][edge[0]-1] = 1
+
+    tpio.writeOutMatrix('/examples/ego-facebook-adj.txt', adjacencyMatrix)
+    return adjacencyMatrix
 
 # input: matrix, filename
 # output: file written (no output)
 #def writeToDisk():
 
 buildSimilarityMatrix()
+transformFacebookEdgesToAdjacencyMatrix()

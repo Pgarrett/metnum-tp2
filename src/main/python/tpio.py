@@ -33,6 +33,11 @@ def readMatrixFile(filename):
         m = [[float(num) for num in line.split(" ")] for line in file]
     return [x[1:] for x in m]
 
+def readEdgesFile(filename):
+    with open(filename, "r") as file:
+        m = [[x for x in map(int,line.strip("\n").split(" "))] for line in file]
+    return m
+
 def readKarateLabels():
     labelsPath = str(os.getcwd()) + '/examples/karateclub_labels.txt'
     labels = []
@@ -102,6 +107,11 @@ def writeOutAdjacencyMatrix(file, matrix):
             output.write(", ".join([str(n) for n in row]))
             output.write("\n")
 
+def writeOutMatrix(path, matrix):
+    with open(str(os.getcwd()) + path, "w") as output:
+        for row in matrix:
+            output.write(" ".join([str(n) for n in row]))
+            output.write("\n")
 
 # Delete lines that don't belong to facebook nodes
 def filterNodesFromFeatures(nodes):

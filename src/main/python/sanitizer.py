@@ -55,3 +55,5 @@ def sortFeat(filteredFeat):
 def sanitizeFeat():
     filteredFeat = filterFeat()
     sortFeat(filteredFeat)
+
+sanitizeFeat()
