@@ -1,4 +1,3 @@
-import comparator as cmp
 import executor as exec
 import tpio
 import numpySolver as npt

@@ -1,7 +1,6 @@
 import config as cfg
 import numpy as np
 import os
-import pandas as pd
 
 def readOutputFile(file):
     if cfg.debug:
