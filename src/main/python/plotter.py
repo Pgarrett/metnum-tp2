@@ -1,8 +1,20 @@
 import config as cfg
 import matplotlib.pyplot as plt
 import networkx as nx
+import numpy as np
 import pydot
 import os
+
+def plotErrorMedian(arr, labels):
+    x = np.array(list(range(len(arr[0]))))
+    fig, ax = plt.subplots()
+    plt.xticks(x)
+    plt.xlabel("Vectores")
+    plt.ylabel("Media del error")
+    for vector, label in zip(arr, labels):
+        ax.scatter(x, np.array(vector), label=label)
+    ax.legend()
+    plt.show()
 
 def generateNetworkPlot(v, name):
     G = nx.Graph()
