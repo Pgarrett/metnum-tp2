@@ -73,7 +73,8 @@ def addLinks(input, dotFile):
             print(line)
 
 def readEigenValues(filename):
-    with open(filename, "r") as file:
+    inputPath = str(os.getcwd()) + filename
+    with open(inputPath, "r") as file:
         l = [line for line in file]
         l.pop(0)
         l = [float(line[:-2]) for line in l]

@@ -4,7 +4,7 @@ import plotter as plot
 import executor as exec
 import tpio
 import numpy as np
-
+from pathlib import Path
 from scipy import stats
 
 def adjacencyByU(similarity, u):
@@ -38,24 +38,25 @@ def eigenValueCompare(adjacencyMatrix, u, fbEdgesEigenValues):
 
 # def chooseOptimumUValue():
 
-def calculateFbEdgesEigenValues(fbEdges):
-    exec.runTpFor(fbEdges)
-    return tpio.readEigenValues(fbEdges)
+def calculateFbEigenValues():
+    inputPath = 'ego-facebook-adj'
+    if not Path('/results/' + inputPath + '_eigenValues.csv').is_file():
+        exec.runTpFor(inputPath)
+    return tpio.readEigenValues(inputPath)
 
 def correlation(v1, v2):
     return stats.pearsonr(v1, v2).pvalue
 
 def run():
     similarity = mBuilder.buildSimilarityMatrix()
-    fbEdgesFile = mBuilder.transformFacebookEdgesToAdjacencyMatrix()
-    fbEdges = tpio.toNumpyMatrix(tpio.readOutputMatrixFile(fbEdgesFile))
-    fbEigenValues = calculateFbEdgesEigenValues(fbEdgesFile)
+    fbAdj = mBuilder.transformFacebookEdgesToAdjacencyMatrix()
+    fbEigenValues = calculateFbEigenValues()
+
     flattenCorrelations = []
     eigenValueCorrelations = []
-
     for u in cfg.uValues:
         adj = adjacencyByU(similarity, u)
-        flattenCorrelations.append(flattenCompare(adj, fbEdges))
+        flattenCorrelations.append(flattenCompare(adj, fbAdj))
         eigenValueCorrelations.append(eigenValueCompare(adj, u, fbEigenValues))
 
     plot.generateUCutsForFlatten(flattenCorrelations)
