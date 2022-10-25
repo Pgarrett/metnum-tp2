@@ -93,6 +93,7 @@ vector<eigenPair> deflationMethod(const Matrix<double, Dynamic, Dynamic, RowMajo
         a = p.eigenvalue;
         vector<double> ev = p.eigenvector;
         v = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(ev.data(), ev.size());
+        cout << "Found eigenvalue number: " << i << ".  Value: " <<  p.eigenvalue << endl;
     }
   return result;
 }
