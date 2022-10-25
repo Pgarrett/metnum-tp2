@@ -10,3 +10,5 @@ tp2
 src/main/python/__pycache__/
 .DS_Store
 src/.DS_Store
+results/*_eigen*
+examples/ego-facebook-adj_*
