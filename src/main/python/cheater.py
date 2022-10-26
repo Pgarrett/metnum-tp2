@@ -1,6 +1,10 @@
 import numpySolver as npt
 import numpy as np
 
+def superSimulateCppFor(matrix):
+    l, V = np.linalg.eigh(matrix)
+    return l
+
 def simulateCppFor(inputFile):
     l, V = npt.solve("./examples/" + inputFile + ".txt")
     writeEigenValues(inputFile, l)

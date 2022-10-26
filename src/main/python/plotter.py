@@ -115,3 +115,10 @@ def compareUCuts(flatCorrelations, eigenValCorrelations):
     plt.plot(cfg.uValues, eigenValCorrelations, color="red", label="Autovalores")
     plt.legend()
     plt.show()
+
+def similarityPlot(matrix, plotTitle):
+    plt.title(plotTitle)
+    plt.xlabel("Número nodo")
+    plt.ylabel("Número nodo")
+    plt.imshow(matrix, interpolation="nearest")
+    plt.show()
