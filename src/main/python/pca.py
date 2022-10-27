@@ -24,17 +24,17 @@ def doPCA():
     egoM = np.asmatrix(tpio.readMatrixFile(str(os.getcwd()) + '/examples/ego-facebook-sorted.txt'))
     substractMeanColumnFromEachColumn(egoM)
     covFeatAdjust = featureCovarianceMatrix(egoM)
-    correlationsByU = np.empty(shape=[0, 21])
+    correlationsByU = np.zeros(shape=(8,cfg.maxU))
     _, fbEigenValues = ex3.originalFbEigen()
     l, V = ch.superSimulateCppFor(covFeatAdjust)
     n = len(l)
     for k in cfg.kValues:
-        vK = V[:, range(k, n)]
+        vK = V[:, range(n-k, n)]
         kData = np.transpose(vK) @ np.transpose(egoM)
         kSimilarity = np.transpose(kData) @ kData
         for u in cfg.uPca:
             adjByU = ex3.adjacencyByU(kSimilarity, u)
             evCorrelation = ex3.eigenValueCompare(adjByU, fbEigenValues)
-            correlationsByU[u].append(evCorrelation)
+            correlationsByU[k,u] = evCorrelation
 
 doPCA()

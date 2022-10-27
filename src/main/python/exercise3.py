@@ -15,7 +15,7 @@ def adjacencyByU(similarity, u):
     for i in range(0, n):
         rowResult = []
         for j in range(0, n):
-            if similarity[i][j] <= u:
+            if similarity[i,j] < u or abs(similarity[i,j] - u) < cfg.compareToleranceEpsilon:
                 rowResult.append(0)
             else:
                 rowResult.append(1)
@@ -37,7 +37,7 @@ def eigenValueCompare(adjacencyMatrix, fbEdgesEigenValues):
     # adjFile = writeAdjacencyToFile(adjacencyMatrix, u)
     # exec.runTpFor(adjFile)
     # ch.simulateCppFor(adjFile)
-    adjEigenValues = ch.superSimulateCppFor(adjacencyMatrix)
+    adjEigenValues, v = ch.superSimulateCppFor(adjacencyMatrix)
     # adjEigenValues = tpio.readEigenValues("/results/" + adjFile + "_eigenValues.csv")
     return correlation(np.real(adjEigenValues), np.real(fbEdgesEigenValues))
 
@@ -58,7 +58,8 @@ def originalFbEigen():
     fbAdj = mBuilder.transformFacebookEdgesToAdjacencyMatrix()
     print("Calculating adjacency matrix from edges eigenvalues")
     plot.similarityPlot(fbAdj, "Matrix de adyacencia Facebook Edges")
-    return fbAdj, ch.superSimulateCppFor(fbAdj)
+    eigenList, _ = ch.superSimulateCppFor(fbAdj)
+    return fbAdj, eigenList
 
 def run3_1_2_3():
     print("Building similarity matrix")
