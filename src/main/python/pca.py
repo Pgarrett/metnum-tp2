@@ -6,6 +6,7 @@ import exercise3 as ex3
 import sanitizer
 import tpio
 import os
+import plotter as plt
 
 def featureCovarianceMatrix(featureMatrix):
     featureMatrixT = np.transpose(featureMatrix)
@@ -24,17 +25,35 @@ def doPCA():
     egoM = np.asmatrix(tpio.readMatrixFile(str(os.getcwd()) + '/examples/ego-facebook-sorted.txt'))
     substractMeanColumnFromEachColumn(egoM)
     covFeatAdjust = featureCovarianceMatrix(egoM)
-    correlationsByU = np.zeros(shape=(8,cfg.maxU))
     _, fbEigenValues = ex3.originalFbEigen()
     l, V = ch.superSimulateCppFor(covFeatAdjust)
     n = len(l)
-    for k in cfg.kValues:
+    i = 0
+    correlationsByUZoomIn = np.zeros(shape=(8, cfg.maxU))
+    for k in cfg.kValuesZoomIn:
         vK = V[:, range(n-k, n)]
         kData = np.transpose(vK) @ np.transpose(egoM)
         kSimilarity = np.transpose(kData) @ kData
         for u in cfg.uPca:
+            print("calculating k u: " + str(k) + " " + str(u))
             adjByU = ex3.adjacencyByU(kSimilarity, u)
             evCorrelation = ex3.eigenValueCompare(adjByU, fbEigenValues)
-            correlationsByU[k,u] = evCorrelation
+            correlationsByUZoomIn[i,u] = evCorrelation
+        i += 1
+    plt.compareKUCutsZoomIn(correlationsByUZoomIn)
+
+    correlationsByUZoomOut = np.zeros(shape=(8, cfg.maxU))
+    i=0
+    for k in cfg.kValuesZoomOut:
+        vK = V[:, range(n-k, n)]
+        kData = np.transpose(vK) @ np.transpose(egoM)
+        kSimilarity = np.transpose(kData) @ kData
+        for u in cfg.uPca:
+            print("calculating k u: " + str(k) + " " + str(u))
+            adjByU = ex3.adjacencyByU(kSimilarity, u)
+            evCorrelation = ex3.eigenValueCompare(adjByU, fbEigenValues)
+            correlationsByUZoomOut[i,u] = evCorrelation
+        i += 1
+    plt.compareKUCutsZoomOut(correlationsByUZoomOut)
 
 doPCA()

@@ -116,12 +116,29 @@ def compareUCuts(flatCorrelations, eigenValCorrelations):
     plt.legend()
     plt.show()
 
-def compareKUCuts(uCorrelations):
-    plt.xlabel("K selecciones")
+def compareKUCutsZoomIn(kCorrelations):
+    plt.xlabel("Umbral")
     plt.ylabel("Correlación")
-    plt.title("Comparación de correlación de por K")
-    for uCorrelation in uCorrelations:
-        plt.plot(cfg.kValues, uCorrelation)
+    plt.title("Umbral vs Correlación")
+    k = 1
+    for kCorrelation in kCorrelations:
+        plt.plot(cfg.uPca, kCorrelation, label="k="+str(k))
+        k += cfg.stepKByZoomIn
+    valuesOf1 = [1]*(kCorrelations.shape[1])
+    plt.plot(cfg.uPca, valuesOf1, color='black', linestyle='dashed')
+    plt.legend()
+    plt.show()
+
+def compareKUCutsZoomOut(kCorrelations):
+    plt.xlabel("Umbral")
+    plt.ylabel("Correlación")
+    plt.title("Umbral vs Correlación")
+    k = 1
+    for kCorrelation in kCorrelations:
+        plt.plot(cfg.uPca, kCorrelation, label="k="+str(k))
+        k += cfg.stepKByZoomOut
+    valuesOf1 = [1]*(kCorrelations.shape[1])
+    plt.plot(cfg.uPca, valuesOf1, color='black', linestyle='dashed')
     plt.legend()
     plt.show()
 
