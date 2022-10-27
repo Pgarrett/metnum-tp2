@@ -7,7 +7,7 @@ def readOutputFile(file):
         print("Reading output file ", file)
     path = str(os.getcwd()) + "/results/"
     outputEigenVectors = readEigenVectors(path + file + "_eigenVectors.csv")
-    outputEigenValues = readEigenValues(path + file + "_eigenValues.csv")
+    outputEigenValues = readEigenValues("/results/" + file + "_eigenValues.csv")
     if cfg.debug:
         print("\nread matrix")
         print(outputEigenVectors)

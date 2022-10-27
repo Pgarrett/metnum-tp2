@@ -6,8 +6,9 @@ import tpio
 import numpy as np
 from pathlib import Path
 from scipy import stats
-import cheater as ch
-# import pca
+import os
+import sanitizer
+
 
 def adjacencyByU(similarity, u):
     n = len(similarity)
@@ -15,39 +16,33 @@ def adjacencyByU(similarity, u):
     for i in range(0, n):
         rowResult = []
         for j in range(0, n):
-            if similarity[i,j] < u or abs(similarity[i,j] - u) < cfg.compareToleranceEpsilon:
+            if similarity[i,j] < u or abs(similarity[i,j] - u) < cfg.compareToleranceEpsilon or i == j:
                 rowResult.append(0)
             else:
                 rowResult.append(1)
         result.append(rowResult)
     return result
 
-def writeAdjacencyToFile(adj, u):
-    outputMatrixFile = 'ego-facebook-adj_' + str(u)
+def writeMatrixToFile(adj, outputFilename):
     np.set_printoptions(suppress=True)
-    np.savetxt('./examples/' + outputMatrixFile + '.txt', adj, fmt='%i')
-    return outputMatrixFile
+    np.savetxt('./examples/' + outputFilename + '.txt', adj, fmt='%i')
+    return outputFilename
 
 def flattenCompare(adjacencyMatrix, transformedFacebookEdgesFile):
     flatAdj = np.concatenate(adjacencyMatrix).ravel()
     flatFb = np.concatenate(transformedFacebookEdgesFile).ravel()
     return correlation(flatAdj, flatFb)
 
-def eigenValueCompare(adjacencyMatrix, fbEdgesEigenValues):
-    # adjFile = writeAdjacencyToFile(adjacencyMatrix, u)
-    # exec.runTpFor(adjFile)
-    # ch.simulateCppFor(adjFile)
-    adjEigenValues, v = ch.superSimulateCppFor(adjacencyMatrix)
-    # adjEigenValues = tpio.readEigenValues("/results/" + adjFile + "_eigenValues.csv")
+def eigenValueCompare(adjacencyMatrix, fbEdgesEigenValues, outputAdjFilename):
+    adjFile = writeMatrixToFile(adjacencyMatrix, outputAdjFilename)
+    exec.runTpFor(adjFile)
+    adjEigenValues = tpio.readEigenValues("/results/" + adjFile + "_eigenValues.csv")
     return correlation(np.real(adjEigenValues), np.real(fbEdgesEigenValues))
-
-# def chooseOptimumUValue():
 
 def calculateFbEigenValues():
     inputPath = 'ego-facebook-adj'
     if not Path('/results/' + inputPath + '_eigenValues.csv').is_file():
-        # exec.runTpFor(inputPath)
-        ch.simulateCppFor(inputPath)
+        exec.runTpFor(inputPath)
     return tpio.readEigenValues('/results/' + inputPath + '_eigenValues.csv')
 
 def correlation(v1, v2):
@@ -58,7 +53,9 @@ def originalFbEigen():
     fbAdj = mBuilder.transformFacebookEdgesToAdjacencyMatrix()
     print("Calculating adjacency matrix from edges eigenvalues")
     plot.similarityPlot(fbAdj, "Matrix de adyacencia Facebook Edges")
-    eigenList, _ = ch.superSimulateCppFor(fbAdj)
+
+    exec.runTpFor("ego-facebook-adj")
+    eigenList = tpio.readEigenValues('/results/ego-facebook-adj_eigenValues.csv')
     return fbAdj, eigenList
 
 def run3_1_2_3():
@@ -84,7 +81,7 @@ def run3_1_2_3():
             maxFlattenCorrelation = u
         flattenCorrelations.append(flatCorrelation)
         print("Eigenvalue compare")
-        evCorrelation = eigenValueCompare(adj, fbEigenValues)
+        evCorrelation = eigenValueCompare(adj, fbEigenValues, 'ego-facebook-adj_' + str(u))
         eigenValueCorrelations.append(evCorrelation)
         if evCorrelation > maxEVCorrelationVal:
             maxEVCorrelationVal = evCorrelation
@@ -103,11 +100,62 @@ def run3_1_2_3():
     plot.generateUCutsForEigenValues(eigenValueCorrelations)
     plot.compareUCuts(flattenCorrelations, eigenValueCorrelations)
 
-# def run3_4():
-#     pca.doPCA()
+def featureCovarianceMatrix(featureMatrix):
+    featureMatrixT = np.transpose(featureMatrix)
+    return (featureMatrixT @ featureMatrix) / (len(featureMatrix) - 1)
+
+def substractMeanColumnFromEachColumn(m):
+    for i in range(0, len(m[0])):
+        columnI = np.squeeze(np.asarray(m[:,i]))
+        averageOfColumnI = sum(columnI) / len(m)
+        m[:, i] = m[:,i] - averageOfColumnI
+
+def doPCA():
+    if not Path(str(os.getcwd()) + '/examples/ego-facebook-sorted.txt').is_file():
+        sanitizer.sanitizeFeat()
+
+    egoM = np.asmatrix(tpio.readMatrixFile(str(os.getcwd()) + '/examples/ego-facebook-sorted.txt'))
+    substractMeanColumnFromEachColumn(egoM)
+    covFeatAdjust = featureCovarianceMatrix(egoM)
+    _, fbEigenValues = originalFbEigen()
+    covFeatAdjustFilename = "ego-facebook-cov-feat-adjust"
+    writeMatrixToFile(covFeatAdjust, covFeatAdjustFilename)
+    exec.runTpFor(covFeatAdjustFilename)
+    l, V = tpio.readOutputFile(covFeatAdjustFilename)
+    V = np.transpose(V)
+    n = len(l)
+    i = 0
+    correlationsByUZoomIn = np.zeros(shape=(8, cfg.maxU))
+    for k in cfg.kValuesZoomIn:
+        vK = V[:, range(n-k, n)]
+        kData = np.transpose(vK) @ np.transpose(egoM)
+        kSimilarity = np.transpose(kData) @ kData
+        for u in cfg.uPca:
+            print("calculating k u: " + str(k) + " " + str(u))
+            adjByU = adjacencyByU(kSimilarity, u)
+            evCorrelation = eigenValueCompare(adjByU, fbEigenValues, 'ego-facebook-adj_k_' + str(k) + "_" + str(u))
+            correlationsByUZoomIn[i,u] = evCorrelation
+        i += 1
+    plot.compareKUCutsZoomIn(correlationsByUZoomIn)
+
+    correlationsByUZoomOut = np.zeros(shape=(8, cfg.maxU))
+    i=0
+    for k in cfg.kValuesZoomOut:
+        vK = V[:, range(n-k, n)]
+        kData = np.transpose(vK) @ np.transpose(egoM)
+        kSimilarity = np.transpose(kData) @ kData
+        for u in cfg.uPca:
+            print("calculating k u: " + str(k) + " " + str(u))
+            adjByU = adjacencyByU(kSimilarity, u)
+            evCorrelation = eigenValueCompare(adjByU, fbEigenValues)
+            correlationsByUZoomOut[i,u] = evCorrelation
+        i += 1
+    plot.compareKUCutsZoomOut(correlationsByUZoomOut)
+
+def run3_4():
+    doPCA()
 
 def run():
+    print("### Start Exercise 3 ###")
     run3_1_2_3()
-    # run3_4()
-
-run()
+    run3_4()

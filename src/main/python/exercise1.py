@@ -116,7 +116,6 @@ def calculateErrorMedian(v1, v2):
     return abs(np.median(diff))
 
 def run():
+    print("### Start Exercise 1 ###")
     testExampleCases()
     testParams()
-
-run()

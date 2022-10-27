@@ -43,5 +43,6 @@ def bestPrediction(output):
     return result[2]
 
 def run():
+    print("### Start Exercise 2 ###")
     centrality()
     prediction()

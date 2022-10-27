@@ -38,10 +38,6 @@ def buildSimilarityMatrix():
     similarity = egoM @ transposedEgoM
     return similarity
 
-# input: facebook_similarity.txt, u
-# output: facebook_$u_adj.txt
-#def buildAdjacencyMatrix(u):
-
 # input: facebook.edges
 # output: facebook_edges_adj.txt
 def transformFacebookEdgesToAdjacencyMatrix():
@@ -57,10 +53,6 @@ def transformFacebookEdgesToAdjacencyMatrix():
 
     tpio.writeOutMatrix('/examples/ego-facebook-adj.txt', adjacencyMatrix)
     return adjacencyMatrix
-
-# input: matrix, filename
-# output: file written (no output)
-#def writeToDisk():
 
 def egoIndexByNodeNumber(number, featureMatrix):
     nodeNumberList = [row[0] for row in featureMatrix]

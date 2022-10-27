@@ -1,2 +1,0 @@
-def pca():
-    print("doing pca")
