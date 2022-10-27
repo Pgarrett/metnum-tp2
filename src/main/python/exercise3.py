@@ -33,7 +33,7 @@ def flattenCompare(adjacencyMatrix, transformedFacebookEdgesFile):
     flatFb = np.concatenate(transformedFacebookEdgesFile).ravel()
     return correlation(flatAdj, flatFb)
 
-def eigenValueCompare(adjacencyMatrix, u, fbEdgesEigenValues):
+def eigenValueCompare(adjacencyMatrix, fbEdgesEigenValues):
     # adjFile = writeAdjacencyToFile(adjacencyMatrix, u)
     # exec.runTpFor(adjFile)
     # ch.simulateCppFor(adjFile)
@@ -53,16 +53,19 @@ def calculateFbEigenValues():
 def correlation(v1, v2):
     return np.corrcoef(v1, v2)[0,1]
 
+def originalFbEigen():
+    print("Building adjacency matrix from edges")
+    fbAdj = mBuilder.transformFacebookEdgesToAdjacencyMatrix()
+    print("Calculating adjacency matrix from edges eigenvalues")
+    plot.similarityPlot(fbAdj, "Matrix de adyacencia Facebook Edges")
+    return fbAdj, ch.superSimulateCppFor(fbAdj)
+
 def run3_1_2_3():
     print("Building similarity matrix")
     similarity = mBuilder.buildSimilarityMatrix()
     np.set_printoptions(suppress=True)
     np.savetxt('./examples/fb_similarity_v2.txt', similarity, fmt='%i')
-    print("Building adjacency matrix from edges")
-    fbAdj = mBuilder.transformFacebookEdgesToAdjacencyMatrix()
-    print("Calculating adjacency matrix from edges eigenvalues")
-    plot.similarityPlot(fbAdj, "Matrix de adyacencia Facebook Edges")
-    fbEigenValues = ch.superSimulateCppFor(fbAdj)
+    fbAdj, fbEigenValues = originalFbEigen()
 
     flattenCorrelations = []
     eigenValueCorrelations = []
@@ -80,7 +83,7 @@ def run3_1_2_3():
             maxFlattenCorrelation = u
         flattenCorrelations.append(flatCorrelation)
         print("Eigenvalue compare")
-        evCorrelation = eigenValueCompare(adj, u, fbEigenValues)
+        evCorrelation = eigenValueCompare(adj, fbEigenValues)
         eigenValueCorrelations.append(evCorrelation)
         if evCorrelation > maxEVCorrelationVal:
             maxEVCorrelationVal = evCorrelation

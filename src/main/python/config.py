@@ -3,5 +3,7 @@ iterations=1e4
 powerMethodEpsilon=1e-7
 debug=False
 uValues=range(0,22)
+kValues=range(1,320, 40)
+uPca=range(0, 22) # check which values terminan siendo
 startUpUValue=10
 optimumUValue=5

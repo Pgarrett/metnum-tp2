@@ -116,6 +116,15 @@ def compareUCuts(flatCorrelations, eigenValCorrelations):
     plt.legend()
     plt.show()
 
+def compareKUCuts(uCorrelations):
+    plt.xlabel("K selecciones")
+    plt.ylabel("Correlación")
+    plt.title("Comparación de correlación de por K")
+    for uCorrelation in uCorrelations:
+        plt.plot(cfg.kValues, uCorrelation)
+    plt.legend()
+    plt.show()
+
 def similarityPlot(matrix, plotTitle):
     plt.title(plotTitle)
     plt.xlabel("Número nodo")
