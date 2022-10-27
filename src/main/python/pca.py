@@ -12,7 +12,7 @@ def featureCovarianceMatrix(featureMatrix):
     return (featureMatrixT @ featureMatrix) / (len(featureMatrix) - 1)
 
 def substractMeanColumnFromEachColumn(m):
-    for i in range(0, len(m)):
+    for i in range(0, len(m[0])):
         columnI = np.squeeze(np.asarray(m[:,i]))
         averageOfColumnI = sum(columnI) / len(m)
         m[:, i] = m[:,i] - averageOfColumnI
@@ -24,7 +24,7 @@ def doPCA():
     egoM = np.asmatrix(tpio.readMatrixFile(str(os.getcwd()) + '/examples/ego-facebook-sorted.txt'))
     substractMeanColumnFromEachColumn(egoM)
     covFeatAdjust = featureCovarianceMatrix(egoM)
-    correlationsByU = [[]] * cfg.uPca
+    correlationsByU = np.empty(shape=[0, 21])
     _, fbEigenValues = ex3.originalFbEigen()
     l, V = ch.superSimulateCppFor(covFeatAdjust)
     n = len(l)

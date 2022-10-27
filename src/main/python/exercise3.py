@@ -7,7 +7,7 @@ import numpy as np
 from pathlib import Path
 from scipy import stats
 import cheater as ch
-import pca
+# import pca
 
 def adjacencyByU(similarity, u):
     n = len(similarity)
@@ -102,11 +102,11 @@ def run3_1_2_3():
     plot.generateUCutsForEigenValues(eigenValueCorrelations)
     plot.compareUCuts(flattenCorrelations, eigenValueCorrelations)
 
-def run3_4():
-    pca.doPCA()
+# def run3_4():
+#     pca.doPCA()
 
 def run():
-    #run3_1_2_3()
-    run3_4()
+    run3_1_2_3()
+    # run3_4()
 
 run()
