@@ -7,6 +7,7 @@ import numpy as np
 from pathlib import Path
 from scipy import stats
 import cheater as ch
+import pca
 
 def adjacencyByU(similarity, u):
     n = len(similarity)
@@ -52,7 +53,7 @@ def calculateFbEigenValues():
 def correlation(v1, v2):
     return np.corrcoef(v1, v2)[0,1]
 
-def run():
+def run3_1_2_3():
     print("Building similarity matrix")
     similarity = mBuilder.buildSimilarityMatrix()
     np.set_printoptions(suppress=True)
@@ -98,5 +99,11 @@ def run():
     plot.generateUCutsForEigenValues(eigenValueCorrelations)
     plot.compareUCuts(flattenCorrelations, eigenValueCorrelations)
 
+def run3_4():
+    pca.doPCA()
+
+def run():
+    #run3_1_2_3()
+    run3_4()
 
 run()

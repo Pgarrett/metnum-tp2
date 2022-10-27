@@ -21,7 +21,6 @@ def toNumpyMatrix(matrix):
         np_arrays.append(np.array(arr))
     return np_arrays
 
-
 def readOutputMatrixFile(filename):
     with open(filename, "r") as file:
         m = [[float(num) for num in line.split(", ")] for line in file]
